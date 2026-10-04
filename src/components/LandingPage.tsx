@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
@@ -58,10 +58,7 @@ function ParcelDiagram() {
 }
 
 export default function LandingPage() {
-  const heroRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
-  const { scrollYProgress } = useScroll({ target: heroRef });
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.2]);
 
   return (
     <main className="landing-page-wrapper min-h-screen overflow-hidden bg-[#07111f] text-slate-100">
@@ -73,7 +70,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      <motion.section ref={heroRef} style={{ opacity }} className="relative min-h-screen border-b border-white/[.07] px-6 pb-20 pt-32 lg:px-12">
+      <motion.section className="relative min-h-screen border-b border-white/[.07] px-6 pb-20 pt-40 lg:px-12 lg:pt-32">
         <div className="absolute inset-0 parcel-grid-bg opacity-20" /><div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_45%,rgba(34,211,238,.11),transparent_35%)]" />
         <div className="relative mx-auto grid min-h-[calc(100vh-152px)] max-w-[1440px] items-center gap-14 lg:grid-cols-[.84fr_1.16fr]">
           <div className="max-w-xl"><div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.28em] text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_12px_#34d399]" /> GIS intelligence platform · India</div><h1 className="font-heading text-[clamp(4rem,8vw,8.5rem)] font-semibold leading-[.82] tracking-[-.08em] text-white">LAND<br /><span className="text-cyan-200">LENS</span><span className="text-cyan-300/30">.</span></h1><p className="mt-10 max-w-md text-lg leading-relaxed text-slate-400">See the land. <span className="text-slate-100">Understand the data.</span> Connect fragmented records, planning, registration and spatial intelligence around every parcel.</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/login" className="group flex items-center gap-3 bg-cyan-300 px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#07111f] transition hover:bg-white">Explore LandLens <ArrowUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/map" className="flex items-center gap-3 border border-white/15 px-5 py-3 text-xs font-semibold uppercase tracking-[.12em] text-slate-200 transition hover:border-cyan-200/60 hover:text-cyan-200"><Play className="size-3 fill-current" /> View GIS demo</Link></div><div className="mt-16 grid max-w-md grid-cols-3 border-t border-white/10 pt-5">{metrics.map(([value, label]) => <div key={label}><div className="font-heading text-2xl text-white">{value}</div><div className="mt-1 font-mono text-[9px] uppercase tracking-[.12em] text-slate-500">{label}</div></div>)}</div></div>
