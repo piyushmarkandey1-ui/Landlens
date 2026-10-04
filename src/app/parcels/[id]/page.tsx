@@ -480,12 +480,6 @@ export default function Parcel360Page() {
                 <Link href="/workflows" className="nav-item text-xs">
                   <Workflow size={13} className="text-indigo-400" /> Create Workflow Task
                 </Link>
-                <button className="nav-item text-xs w-full text-left">
-                  <FileText size={13} className="text-emerald-400" /> Generate Parcel Report
-                </button>
-                <button className="nav-item text-xs w-full text-left">
-                  <ExternalLink size={13} className="text-amber-400" /> Export Data
-                </button>
               </div>
             </div>
           </div>

@@ -7,11 +7,10 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Map, Search, FileText, GitMerge, AlertTriangle,
   BarChart3, Workflow, Database, Shield, Settings, LogOut,
-  Users, ChevronRight, Layers, Home
+  Users, ChevronRight, Layers, Home, Bell
 } from 'lucide-react';
 import { useAuth, ROLE_LABELS, ROLE_COLORS } from '@/lib/auth';
 import type { UserRole } from '@/lib/types';
-import NotificationCenter from '@/components/NotificationCenter';
 
 interface NavItem {
   href: string;
@@ -24,18 +23,17 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard size={16} />, roles: 'all' },
   { href: '/map', label: 'GIS Map', icon: <Map size={16} />, roles: 'all' },
-  { href: '/citizen', label: 'Citizen Services', icon: <Home size={16} />, roles: ['citizen', 'district_admin', 'system_admin'] },
+  { href: '/citizen', label: 'Citizen Portal', icon: <Home size={16} />, roles: ['citizen', 'district_admin', 'system_admin'] },
   { href: '/officer', label: 'Parcel Search', icon: <Search size={16} />, roles: ['revenue_officer', 'planning_officer', 'registration_officer', 'district_admin', 'system_admin'] },
-  { href: '/revenue', label: 'Revenue Records', icon: <FileText size={16} />, roles: ['revenue_officer', 'district_admin', 'system_admin'] },
-  { href: '/planning', label: 'Planning & Zoning', icon: <Layers size={16} />, roles: ['planning_officer', 'district_admin', 'system_admin'] },
-  { href: '/registration', label: 'Registrations', icon: <GitMerge size={16} />, roles: ['registration_officer', 'district_admin', 'system_admin'] },
-  { href: '/alerts', label: 'Conflicts & Alerts', icon: <AlertTriangle size={16} />, roles: ['revenue_officer', 'planning_officer', 'district_admin', 'system_admin'], badge: 10 },
+  { href: '/revenue', label: 'Revenue', icon: <FileText size={16} />, roles: ['revenue_officer', 'district_admin', 'system_admin'] },
+  { href: '/planning', label: 'Planning', icon: <Layers size={16} />, roles: ['planning_officer', 'district_admin', 'system_admin'] },
+  { href: '/registration', label: 'Registration', icon: <GitMerge size={16} />, roles: ['registration_officer', 'district_admin', 'system_admin'] },
+  { href: '/alerts', label: 'Alerts', icon: <AlertTriangle size={16} />, roles: ['revenue_officer', 'planning_officer', 'district_admin', 'system_admin'], badge: 10 },
   { href: '/workflows', label: 'Workflows', icon: <Workflow size={16} />, roles: ['revenue_officer', 'planning_officer', 'registration_officer', 'district_admin', 'system_admin'], badge: 4 },
   { href: '/analytics', label: 'Analytics', icon: <BarChart3 size={16} />, roles: ['district_admin', 'system_admin'] },
   { href: '/data-sources', label: 'Data Sources', icon: <Database size={16} />, roles: ['system_admin', 'district_admin'] },
-  { href: '/audit', label: 'Audit Logs', icon: <Shield size={16} />, roles: ['system_admin', 'district_admin', 'revenue_officer'] },
-  { href: '/admin', label: 'Administration', icon: <Users size={16} />, roles: ['system_admin'] },
-  { href: '/technical-architecture', label: 'Architecture', icon: <Layers size={16} />, roles: 'all' },
+  { href: '/audit', label: 'Audit', icon: <Shield size={16} />, roles: ['system_admin', 'district_admin', 'revenue_officer'] },
+  { href: '/admin', label: 'Admin', icon: <Users size={16} />, roles: ['system_admin'] },
   { href: '/settings', label: 'Settings', icon: <Settings size={16} />, roles: 'all' },
 ];
 
@@ -53,36 +51,43 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-screen bg-slate-950 overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-60 flex-shrink-0 bg-slate-950 border-r border-indigo-950/60 flex flex-col">
+      {/* ============================================================
+          SIDEBAR
+          ============================================================ */}
+      <aside className="w-64 flex-shrink-0 bg-slate-950 border-r border-indigo-950/50 flex flex-col">
         {/* Logo */}
-        <Link href="/dashboard" className="flex items-center gap-2 px-4 py-4 border-b border-indigo-950/60">
-          <div className="w-7 h-7 rounded-lg gradient-primary flex items-center justify-center">
-            <span className="text-white text-xs font-bold">LL</span>
+        <Link href="/dashboard" className="flex items-center gap-2.5 px-5 py-4 border-b border-indigo-950/50">
+          <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center shadow-lg shadow-indigo-900/50">
+            <span className="text-white text-sm font-bold">LL</span>
           </div>
-          <div>
-            <div className="font-heading font-bold text-sm text-white tracking-wide">LandLens</div>
-            <div className="text-[10px] text-slate-500">Intelligence Layer</div>
+          <div className="flex-1">
+            <div className="font-heading font-bold text-white tracking-tight">LandLens</div>
+            <div className="text-[9px] text-slate-500 tracking-wider uppercase leading-none">GIS Intelligence</div>
           </div>
         </Link>
 
         {/* User Info */}
-        <div className="px-3 py-3 border-b border-indigo-950/40">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+        <div className="px-4 py-4 border-b border-indigo-950/40">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg gradient-primary flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-md shadow-indigo-900/30">
               {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
             </div>
-            <div className="min-w-0">
-              <div className="text-xs font-medium text-slate-200 truncate">{user.name}</div>
-              <div className={`chip text-[10px] mt-0.5 ${roleStyle}`}>
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-slate-200 truncate">{user.name}</div>
+              <div className={`chip text-[10px] mt-1 ${roleStyle}`}>
                 {ROLE_LABELS[user.role]}
               </div>
             </div>
           </div>
+          {user.district && (
+            <div className="mt-2 text-xs text-slate-500">
+              📍 {user.district}
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {visibleItems.map(item => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
@@ -92,13 +97,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 className={`nav-item ${isActive ? 'active' : ''}`}
               >
                 <span className="flex-shrink-0">{item.icon}</span>
-                <span className="flex-1 text-sm">{item.label}</span>
+                <span className="flex-1">{item.label}</span>
                 {item.badge && (
-                  <span className="bg-red-500/80 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center flex-shrink-0">
+                  <span className="bg-red-500 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
                     {item.badge}
                   </span>
                 )}
-                {isActive && <ChevronRight size={12} className="text-indigo-400 flex-shrink-0" />}
               </Link>
             );
           })}
@@ -116,34 +120,43 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       </aside>
 
-      {/* Main Content */}
+      {/* ============================================================
+          MAIN CONTENT AREA
+          ============================================================ */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Bar */}
-        <header className="h-12 border-b border-indigo-950/60 flex items-center px-4 gap-4 bg-slate-950/80 backdrop-blur flex-shrink-0">
+        {/* Top Header Bar */}
+        <header className="h-14 border-b border-indigo-950/50 flex items-center px-6 gap-4 bg-slate-950/90 backdrop-blur-xl flex-shrink-0">
           <div className="flex-1">
-            <nav className="flex items-center gap-1 text-xs text-slate-500">
-              <Link href="/dashboard" className="hover:text-slate-300 transition-colors">Home</Link>
-              <ChevronRight size={10} />
-              <span className="text-slate-400">{visibleItems.find(i => i.href === pathname || pathname.startsWith(i.href + '/'))?.label || 'Page'}</span>
+            <nav className="flex items-center gap-1.5 text-xs text-slate-500">
+              <Link href="/dashboard" className="hover:text-slate-300 transition-colors">Dashboard</Link>
+              <ChevronRight size={12} />
+              <span className="text-slate-300 font-medium">
+                {visibleItems.find(i => i.href === pathname || pathname.startsWith(i.href + '/'))?.label || 'Page'}
+              </span>
             </nav>
           </div>
+          
           <div className="flex items-center gap-3">
-             <NotificationCenter />
-            <div className={`chip text-[10px] ${roleStyle}`}>
+            <button className="relative p-2 rounded-lg hover:bg-slate-800/60 transition-colors text-slate-400 hover:text-slate-300">
+              <Bell size={18} />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500" />
+            </button>
+            
+            <div className={`chip ${roleStyle}`}>
               {ROLE_LABELS[user.role]}
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-grid-pattern-sm relative">
+        <main className="flex-1 overflow-y-auto parcel-grid-bg relative bg-slate-950">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
               className="min-h-full"
             >
               {children}
