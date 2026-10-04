@@ -1,671 +1,94 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
-import { 
-  Map, Database, Shield, ArrowRight, CheckCircle2, AlertTriangle,
-  Brain, Layers, BarChart3, GitMerge, Search, Activity, Eye,
-  Lock, FileText, Users, Building2, Play, Zap, Satellite
-} from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
-// @ts-expect-error - maath does not have types
+import { ArrowUpRight, ChevronRight, CircleDot, Database, FileCheck2, GitMerge, Layers3, Map, Play, ScanLine, Search, ShieldCheck, Sparkles, Waypoints } from 'lucide-react';
+// @ts-expect-error maath ships without types
 import * as random from 'maath/random/dist/maath-random.esm';
 
-// ============================================================
-// DATA
-// ============================================================
-
-const STATS = [
-  { label: 'Land Parcels', value: '630M+', desc: 'ULPIN-addressable across India' },
-  { label: 'Datasets', value: '10+', desc: 'Connected in prototype' },
-  { label: 'Conflict Types', value: '10', desc: 'Detected automatically' },
-  { label: 'Faster', value: '4.2×', desc: 'Conflict resolution time' },
+const sources = ['RoR', 'Registration', 'Zoning', 'Master Plan', 'Tax', 'Satellite'];
+const metrics = [
+  ['630M+', 'addressable parcels'],
+  ['10+', 'connected datasets'],
+  ['4.2×', 'faster resolution'],
 ];
 
-const PROCESS_STEPS = [
-  { num: '01', icon: <Search size={16} />, title: 'Connect', desc: 'Link fragmented land datasets via ULPIN' },
-  { num: '02', icon: <Database size={16} />, title: 'Normalize', desc: 'Convert schemas to canonical parcel model' },
-  { num: '03', icon: <GitMerge size={16} />, title: 'Cross-Check', desc: 'Compare records automatically across sources' },
-  { num: '04', icon: <AlertTriangle size={16} />, title: 'Detect', desc: 'Find conflicts, gaps and inconsistencies' },
-  { num: '05', icon: <Brain size={16} />, title: 'Explain', desc: 'Show evidence and recommended actions' },
-  { num: '06', icon: <Activity size={16} />, title: 'Act', desc: 'Generate verification workflows and tasks' },
-];
-
-const ROLE_CARDS = [
-  { 
-    role: 'Citizen', 
-    icon: <Users size={18} />, 
-    color: '#10b981',
-    features: ['Search parcels by location', '"Can I build here?" check', 'Service request tracking', 'Land use & restrictions']
-  },
-  { 
-    role: 'Revenue Officer', 
-    icon: <FileText size={18} />, 
-    color: '#f59e0b',
-    features: ['RoR & ownership records', 'Conflict resolution queue', 'Field verification tasks', 'Mutation workflows']
-  },
-  { 
-    role: 'Planning Officer', 
-    icon: <Layers size={18} />, 
-    color: '#6366f1',
-    features: ['Zoning & master plan', 'Building permissions', 'Road reservations', 'Satellite monitoring']
-  },
-  { 
-    role: 'District Admin', 
-    icon: <Building2 size={18} />, 
-    color: '#06b6d4',
-    features: ['Analytics dashboard', 'Conflict hotspot map', 'SLA monitoring', 'Performance tracking']
-  },
-];
-
-// ============================================================
-// 3D GEOSPATIAL VISUALIZATION
-// ============================================================
-
-function ParcelCloud(props: any) {
+function ParcelField() {
   const ref = useRef<any>(null);
-  const [sphere] = useState(() => {
-    const positions = new Float32Array(4000);
-    const generated = random.inSphere(positions, { radius: 1.2 });
-    
-    // Validate and clean the positions array
-    for (let i = 0; i < generated.length; i++) {
-      if (!isFinite(generated[i]) || isNaN(generated[i])) {
-        generated[i] = 0;
-      }
-    }
-    
-    return generated;
-  });
-  
-  useFrame((state, delta) => {
+  const [positions] = useState(() => random.inSphere(new Float32Array(4200), { radius: 1.3 }));
+  useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.rotation.x -= delta / 12;
-      ref.current.rotation.y -= delta / 16;
+      ref.current.rotation.y += delta * 0.035;
+      ref.current.rotation.x = Math.sin(Date.now() / 7000) * 0.08;
     }
   });
-  
   return (
-    <group rotation={[0, 0, Math.PI / 6]}>
-      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
-        <PointMaterial 
-          transparent 
-          color="#6366f1" 
-          size={0.004} 
-          sizeAttenuation={true} 
-          depthWrite={false}
-          opacity={0.6}
-        />
+    <group rotation={[0.15, 0, -0.2]}>
+      <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
+        <PointMaterial transparent color="#22d3ee" size={0.006} sizeAttenuation depthWrite={false} opacity={0.48} />
       </Points>
     </group>
   );
 }
 
-// ============================================================
-// MAIN LANDING PAGE
-// ============================================================
+function ParcelDiagram() {
+  return (
+    <div className="relative aspect-square w-full max-w-[600px] overflow-hidden border border-cyan-300/15 bg-[#0b1728]/80 shadow-[0_40px_120px_rgba(0,0,0,.45)]">
+      <div className="absolute inset-0 parcel-grid-bg opacity-30" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_46%,rgba(34,211,238,.16),transparent_34%),radial-gradient(circle_at_55%_55%,rgba(52,211,153,.1),transparent_52%)]" />
+      <Canvas camera={{ position: [0, 0, 1.1], fov: 48 }}>
+        <ambientLight intensity={0.6} />
+        <ParcelField />
+      </Canvas>
+      <div className="absolute inset-[18%] border border-cyan-300/20 [clip-path:polygon(8%_16%,88%_4%,96%_72%,60%_96%,4%_78%)]" />
+      <div className="absolute inset-[29%] border border-emerald-300/45 [clip-path:polygon(9%_18%,87%_4%,96%_74%,60%_96%,4%_78%)]" />
+      <div className="absolute left-1/2 top-1/2 size-20 -translate-x-1/2 -translate-y-1/2 border border-cyan-200 bg-cyan-300/10 shadow-[0_0_45px_rgba(34,211,238,.45)] [clip-path:polygon(8%_16%,88%_4%,96%_72%,60%_96%,4%_78%)]" />
+      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 translate-y-12 items-center gap-2 font-mono text-[9px] uppercase tracking-[.2em] text-cyan-200"><CircleDot className="size-3" /> P-00427 / ACTIVE</div>
+      {sources.map((source, i) => {
+        const positions = ['left-[8%] top-[25%]', 'left-[4%] top-[63%]', 'right-[7%] top-[18%]', 'right-[3%] top-[43%]', 'right-[12%] bottom-[16%]', 'left-[24%] bottom-[8%]'];
+        return <div key={source} className={`absolute ${positions[i]} flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.16em] text-slate-400`}><span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_10px_#22d3ee]" />{source}</div>;
+      })}
+      <div className="absolute bottom-5 left-5 font-mono text-[9px] uppercase tracking-[.18em] text-slate-600">21°15'N · 81°37'E / RAIPUR</div>
+      <div className="absolute right-5 top-5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.18em] text-emerald-300"><span className="size-1.5 animate-pulse rounded-full bg-emerald-300" /> Live parcel model</div>
+    </div>
+  );
+}
 
 export default function LandingPage() {
-  const [activeRole, setActiveRole] = useState(0);
   const heroRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
   const { scrollYProgress } = useScroll({ target: heroRef });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 0.96]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0.2]);
 
   return (
-    <div className="landing-page-wrapper min-h-screen bg-slate-950 text-slate-100">
-      
-      {/* ============================================================
-          NAVIGATION
-          ============================================================ */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-indigo-950/30 bg-slate-950/90 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center shadow-lg shadow-indigo-900/50">
-              <span className="text-white text-sm font-bold">LL</span>
-            </div>
-            <div>
-              <div className="font-heading font-bold text-white tracking-tight">LandLens</div>
-              <div className="text-[9px] text-slate-500 tracking-wider uppercase leading-none">GIS Intelligence</div>
-            </div>
-          </Link>
-          
-          <div className="flex items-center gap-1">
-            <Link 
-              href="/map" 
-              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-slate-800/50"
-            >
-              <Map size={14} /> Live Map
-            </Link>
-            <Link 
-              href="/technical-architecture" 
-              className="hidden sm:flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors px-4 py-2 rounded-lg hover:bg-slate-800/50"
-            >
-              <Layers size={14} /> Architecture
-            </Link>
-            <Link 
-              href="/login" 
-              className="flex items-center gap-1.5 px-5 py-2.5 ml-2 rounded-lg gradient-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-lg shadow-indigo-900/40"
-            >
-              Explore LandLens <ArrowRight size={14} />
-            </Link>
-          </div>
+    <main className="landing-page-wrapper min-h-screen overflow-hidden bg-[#07111f] text-slate-100">
+      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[.07] bg-[#07111f]/75 backdrop-blur-xl">
+        <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-6 lg:px-12">
+          <Link href="/" className="group flex items-center gap-3"><span className="grid size-9 place-items-center border border-cyan-200/40 bg-cyan-300/10 font-mono text-xs font-semibold text-cyan-200 transition group-hover:bg-cyan-300/20">LL</span><span><span className="block font-heading text-sm font-semibold tracking-[.16em] text-white">LANDLENS</span><span className="block font-mono text-[8px] uppercase tracking-[.2em] text-slate-500">Geospatial intelligence</span></span></Link>
+          <div className="hidden items-center gap-8 text-[11px] uppercase tracking-[.16em] text-slate-400 md:flex"><Link href="/map" className="transition hover:text-cyan-200">Map</Link><Link href="/parcels/P-00427" className="transition hover:text-cyan-200">Parcels</Link><Link href="/technical-architecture" className="transition hover:text-cyan-200">Architecture</Link><Link href="/analytics" className="transition hover:text-cyan-200">Analytics</Link></div>
+          <Link href="/login" className="group flex items-center gap-2 border border-cyan-200/40 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.14em] text-cyan-100 transition hover:bg-cyan-300 hover:text-[#07111f]">Enter platform <ArrowUpRight className="size-3 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></Link>
         </div>
       </nav>
 
-      {/* ============================================================
-          HERO SECTION
-          ============================================================ */}
-      <section 
-        ref={heroRef} 
-        className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden gradient-hero-bg"
-      >
-        <div className="absolute inset-0 parcel-grid-bg opacity-30" />
-        
-        {/* Ambient Light Effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-indigo-600/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-cyan-600/10 rounded-full blur-3xl" />
-
-        <motion.div 
-          style={{ opacity: heroOpacity, scale: heroScale }}
-          className="relative z-10 max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-16 items-center"
-        >
-          {/* Left Content */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/8 text-emerald-300 text-xs font-semibold mb-6"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse-soft" />
-              GIS Intelligence for Land Governance
-            </motion.div>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-heading text-5xl md:text-6xl font-bold text-white leading-[1.1] mb-6"
-            >
-              Every parcel.
-              <br />
-              <span className="gradient-text">One intelligent view.</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-slate-400 leading-relaxed mb-8 max-w-xl"
-            >
-              Connect land records, registration, planning, taxation and spatial data around a common parcel identity. From fragmented systems to intelligent governance.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-wrap gap-3"
-            >
-              <Link 
-                href="/login" 
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl gradient-primary text-white font-semibold hover:opacity-90 transition-opacity shadow-xl shadow-indigo-900/40"
-              >
-                <Play size={16} /> Explore LandLens
-              </Link>
-              <Link 
-                href="/map" 
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800/70 border border-slate-700/60 text-slate-200 font-medium hover:bg-slate-700/70 transition-colors"
-              >
-                <Map size={16} className="text-cyan-400" /> View GIS Demo
-              </Link>
-            </motion.div>
-
-            {/* Quick Stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-2 gap-4 mt-10 pt-10 border-t border-slate-800/50"
-            >
-              {STATS.slice(0, 2).map((stat, i) => (
-                <div key={i}>
-                  <div className="text-3xl font-bold gradient-text">{stat.value}</div>
-                  <div className="text-sm text-slate-300 font-medium mt-1">{stat.label}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{stat.desc}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Right Visualization */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
-          >
-            <div className="relative w-full aspect-square max-w-[500px] mx-auto">
-              {/* 3D Parcel Cloud */}
-              <div className="absolute inset-0 z-0">
-                <Canvas camera={{ position: [0, 0, 1], fov: 50 }}>
-                  <ParcelCloud />
-                </Canvas>
-              </div>
-              
-              {/* Center Overlay — ULPIN Focus */}
-              <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
-                {/* Concentric targeting rings */}
-                {[180, 120, 70].map((size, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute rounded-full border"
-                    style={{
-                      width: size,
-                      height: size,
-                      borderColor: i === 2 ? 'rgba(99, 102, 241, 0.4)' : 'rgba(99, 102, 241, 0.15)',
-                      background: i === 2 ? 'rgba(99,102,241,0.08)' : 'transparent',
-                    }}
-                    animate={{ 
-                      scale: [1, 1.03, 1],
-                      opacity: [0.6, 0.8, 0.6]
-                    }}
-                    transition={{ 
-                      duration: 2.5 + i * 0.5, 
-                      repeat: Infinity,
-                      ease: 'easeInOut'
-                    }}
-                  />
-                ))}
-                
-                {/* ULPIN Display */}
-                <div className="relative z-20 text-center">
-                  <div className="font-mono text-sm font-bold text-cyan-300 bg-slate-900/90 px-4 py-2 rounded-lg border border-cyan-500/30 shadow-lg backdrop-blur-sm mb-2">
-                    CG-RPR-0001-0001
-                  </div>
-                  <div className="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">
-                    Unique Land Parcel ID
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Data Labels */}
-              <div className="absolute top-8 right-4 text-xs bg-slate-900/80 px-3 py-1.5 rounded border border-emerald-500/30 text-emerald-300 backdrop-blur-sm">
-                <CheckCircle2 size={10} className="inline mr-1" /> RoR Linked
-              </div>
-              <div className="absolute bottom-16 left-6 text-xs bg-slate-900/80 px-3 py-1.5 rounded border border-cyan-500/30 text-cyan-300 backdrop-blur-sm">
-                <Database size={10} className="inline mr-1" /> 8 Datasets
-              </div>
-              <div className="absolute top-1/3 left-4 text-xs bg-slate-900/80 px-3 py-1.5 rounded border border-violet-500/30 text-violet-300 backdrop-blur-sm">
-                <Layers size={10} className="inline mr-1" /> GIS Ready
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* ============================================================
-          HOW IT WORKS — Compact Horizontal Process
-          ============================================================ */}
-      <section className="py-20 border-y border-indigo-950/30 bg-gradient-section-bg">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="text-eyebrow text-cyan-400 mb-3">How It Works</div>
-            <h2 className="text-h2 font-heading text-white mb-4">From fragmented data to intelligent parcel</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              LandLens connects, normalizes, and cross-checks land data automatically — then explains every finding with evidence.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {PROCESS_STEPS.map((step, i) => (
-              <motion.div
-                key={step.num}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-                viewport={{ once: true }}
-                className="relative surface-card p-5 text-center group hover:border-indigo-500/30 transition-colors"
-              >
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-lg">
-                  {step.num}
-                </div>
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-500/20 transition-colors">
-                  {step.icon}
-                </div>
-                <h3 className="text-sm font-semibold text-white mb-1">{step.title}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{step.desc}</p>
-              </motion.div>
-            ))}
-          </div>
+      <motion.section ref={heroRef} style={{ opacity }} className="relative min-h-screen border-b border-white/[.07] px-6 pb-20 pt-32 lg:px-12">
+        <div className="absolute inset-0 parcel-grid-bg opacity-20" /><div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_45%,rgba(34,211,238,.11),transparent_35%)]" />
+        <div className="relative mx-auto grid min-h-[calc(100vh-152px)] max-w-[1440px] items-center gap-14 lg:grid-cols-[.84fr_1.16fr]">
+          <div className="max-w-xl"><div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.28em] text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_12px_#34d399]" /> GIS intelligence platform · India</div><h1 className="font-heading text-[clamp(4rem,8vw,8.5rem)] font-semibold leading-[.82] tracking-[-.08em] text-white">LAND<br /><span className="text-cyan-200">LENS</span><span className="text-cyan-300/30">.</span></h1><p className="mt-10 max-w-md text-lg leading-relaxed text-slate-400">See the land. <span className="text-slate-100">Understand the data.</span> Connect fragmented records, planning, registration and spatial intelligence around every parcel.</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/login" className="group flex items-center gap-3 bg-cyan-300 px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#07111f] transition hover:bg-white">Explore LandLens <ArrowUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/map" className="flex items-center gap-3 border border-white/15 px-5 py-3 text-xs font-semibold uppercase tracking-[.12em] text-slate-200 transition hover:border-cyan-200/60 hover:text-cyan-200"><Play className="size-3 fill-current" /> View GIS demo</Link></div><div className="mt-16 grid max-w-md grid-cols-3 border-t border-white/10 pt-5">{metrics.map(([value, label]) => <div key={label}><div className="font-heading text-2xl text-white">{value}</div><div className="mt-1 font-mono text-[9px] uppercase tracking-[.12em] text-slate-500">{label}</div></div>)}</div></div>
+          <ParcelDiagram />
         </div>
-      </section>
+        <div className="absolute bottom-7 left-6 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[.2em] text-slate-600 lg:left-12"><ScanLine className="size-3 text-cyan-300" /> Scroll to inspect the intelligence layer <ChevronRight className="size-3" /></div>
+      </motion.section>
 
-      {/* ============================================================
-          LAND TRUTH ENGINE — Hero Feature
-          ============================================================ */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="text-eyebrow text-violet-400 mb-3">Signature Feature</div>
-            <h2 className="text-h1 font-heading text-white mb-4">Land Truth Engine</h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-6">
-              Don't just store land data — understand what the records collectively say. Every alert has evidence. Every conflict has context. Every recommendation has a source.
-            </p>
+      <section className="border-b border-white/[.07] bg-[#0b1728] px-6 py-24 lg:px-12"><div className="mx-auto max-w-[1440px]"><div className="grid gap-14 lg:grid-cols-[.72fr_1.28fr]"><div><div className="eyebrow text-cyan-300">01 / Fragmented → connected</div><h2 className="mt-5 max-w-md font-heading text-4xl font-semibold leading-tight tracking-[-.04em] text-white">One parcel.<br /><span className="text-slate-500">Every point of truth.</span></h2><p className="mt-6 max-w-sm leading-relaxed text-slate-400">LandLens creates a living evidence graph around the parcel — so every decision starts with context, not a disconnected document.</p><Link href="/map" className="mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.15em] text-cyan-200">Open live map <ArrowUpRight className="size-4" /></Link></div><div className="relative grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">{sources.map((source, i) => <button key={source} onClick={() => setActive(i)} className={`group min-h-36 bg-[#0b1728] p-6 text-left transition hover:bg-[#112238] ${active === i ? 'bg-[#112238]' : ''}`}><div className="mb-10 flex items-center justify-between"><span className="font-mono text-[10px] text-slate-600">0{i + 1}</span><Database className={`size-4 ${active === i ? 'text-cyan-200' : 'text-slate-600'}`} /></div><div className="text-sm font-medium text-slate-200">{source}</div><div className="mt-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.1em] text-emerald-300/70"><span className="size-1 rounded-full bg-emerald-300" /> connected</div></button>)}</div></div></div></section>
 
-            <div className="space-y-3">
-              <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <GitMerge size={16} />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">Cross-Dataset Verification</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Compares RoR, registration, zoning, tax, restrictions and satellite data automatically</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Eye size={16} />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">Explainable Intelligence</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Shows exact datasets compared, values found, and recommended next actions</div>
-                </div>
-              </div>
-              
-              <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Activity size={16} />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">Automated Workflows</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Conflicts generate verification tasks with SLA tracking and audit trails</div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <section className="relative px-6 py-28 lg:px-12"><div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,rgba(23,37,84,.7),transparent_60%)]" /><div className="relative mx-auto grid max-w-[1440px] items-center gap-16 lg:grid-cols-[1.1fr_.9fr]"><div className="relative border border-white/10 bg-[#0b1728] p-6 shadow-2xl lg:p-10"><div className="mb-8 flex items-start justify-between"><div><div className="eyebrow text-amber-300">02 / Land Truth Engine</div><h2 className="mt-4 font-heading text-3xl font-semibold tracking-[-.04em] text-white">When records disagree,<br /><span className="text-slate-500">evidence takes over.</span></h2></div><Waypoints className="size-7 text-cyan-300" /></div><div className="border border-rose-300/20 bg-rose-300/[.04] p-5"><div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-rose-300"><span className="size-2 rounded-full bg-rose-300" /> Conflict detected · area mismatch</div><div className="mt-6 grid grid-cols-3 gap-4 text-sm"><div><div className="font-mono text-[10px] text-slate-500">RoR</div><div className="mt-2 text-xl text-white">2.40 <small className="text-xs text-slate-500">acres</small></div></div><div><div className="font-mono text-[10px] text-slate-500">Registration</div><div className="mt-2 text-xl text-white">2.10 <small className="text-xs text-slate-500">acres</small></div></div><div><div className="font-mono text-[10px] text-slate-500">Difference</div><div className="mt-2 text-xl text-amber-300">0.30 <small className="text-xs text-slate-500">acres</small></div></div></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2"><div className="border border-white/10 p-4"><div className="eyebrow text-cyan-200">Evidence</div><div className="mt-3 text-sm text-slate-300">2 source records require review</div></div><div className="border border-white/10 p-4"><div className="eyebrow text-emerald-300">Recommended action</div><div className="mt-3 text-sm text-slate-300">Initiate field verification</div></div></div></div><div><div className="eyebrow text-emerald-300">03 / Explainable intelligence</div><h2 className="mt-5 font-heading text-4xl font-semibold leading-tight tracking-[-.04em] text-white">From alert<br />to <span className="text-cyan-200">action.</span></h2><p className="mt-6 max-w-md leading-relaxed text-slate-400">Every conflict becomes a clear next step. LandLens gives officers, planners and citizens the evidence to move with confidence.</p><div className="mt-9 flex flex-col gap-4 border-l border-cyan-300/30 pl-5 text-sm text-slate-300"><div className="flex items-center gap-3"><ShieldCheck className="size-4 text-emerald-300" /> Traceable source evidence</div><div className="flex items-center gap-3"><GitMerge className="size-4 text-cyan-300" /> Cross-system comparison</div><div className="flex items-center gap-3"><FileCheck2 className="size-4 text-amber-300" /> Auditable workflow output</div></div></div></section>
 
-          {/* Mock Intelligence Panel */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="intelligence-panel p-6"
-          >
-            <div className="flex items-center justify-between mb-5 pb-4 border-b border-indigo-500/20">
-              <div>
-                <div className="text-xs font-mono text-slate-500">CG-RPR-0002-0001</div>
-                <div className="font-heading text-lg font-bold text-white mt-1">Parcel P-00427</div>
-                <div className="text-xs text-slate-400 mt-0.5">Khasra 128/3, Amanaka, Raipur</div>
-              </div>
-              <div className="status-badge status-conflict">
-                <AlertTriangle size={12} /> Review Required
-              </div>
-            </div>
+      <section className="border-t border-white/[.07] bg-[#f7f9fc] px-6 py-24 text-[#07111f] lg:px-12"><div className="mx-auto grid max-w-[1440px] items-end gap-12 lg:grid-cols-[1fr_1fr]"><div><div className="eyebrow text-[#087f8c]">Built for the land stack</div><h2 className="mt-5 max-w-lg font-heading text-4xl font-semibold leading-tight tracking-[-.04em]">A calmer way to navigate complexity.</h2></div><div className="grid gap-3 sm:grid-cols-2"><Link href="/citizen" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Map className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For citizens</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Find your land, understand restrictions and request service without the maze.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/dashboard" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Layers3 className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For institutions</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Govern parcels, conflicts and workflows from one operational view.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link></div></div></section>
 
-            {/* Data Health Grid */}
-            <div className="text-eyebrow mb-3">Data Health</div>
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              {[
-                { label: 'Ownership', status: 'conflict' },
-                { label: 'Registration', status: 'attention' },
-                { label: 'Area', status: 'conflict' },
-                { label: 'Zoning', status: 'verified' },
-                { label: 'Building', status: 'verified' },
-                { label: 'Tax', status: 'verified' },
-              ].map(item => (
-                <div key={item.label} className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-900/60 border border-slate-800/60">
-                  <span className="text-xs text-slate-400">{item.label}</span>
-                  <span className={`w-2 h-2 rounded-full ${
-                    item.status === 'verified' ? 'bg-emerald-400' :
-                    item.status === 'attention' ? 'bg-amber-400' : 'bg-red-400'
-                  }`} />
-                </div>
-              ))}
-            </div>
-
-            {/* Conflicts */}
-            <div className="text-eyebrow mb-3">Land Truth Analysis</div>
-            <div className="space-y-2 mb-5">
-              <div className="px-4 py-3 rounded-lg bg-red-500/8 border border-red-500/25">
-                <div className="flex items-start gap-2 mb-2">
-                  <AlertTriangle size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <div className="text-sm font-semibold text-red-300">Area Mismatch Detected</div>
-                    <div className="text-xs text-slate-400 mt-1">RoR: 2.40 acres • Registration: 2.10 acres • Difference: 0.30 acres (12.5%)</div>
-                  </div>
-                </div>
-                <div className="text-xs text-slate-500 mt-2 pt-2 border-t border-red-500/15">
-                  Recommended action: Verify registration record with Sub-Registrar Office
-                </div>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2">
-              <button className="flex-1 py-2.5 rounded-lg gradient-primary text-white text-sm font-semibold hover:opacity-90 transition-opacity">
-                View Evidence
-              </button>
-              <button className="flex-1 py-2.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-slate-300 text-sm font-medium hover:bg-slate-700/80 transition-colors">
-                Create Task
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          ROLE-BASED EXPERIENCE
-          ============================================================ */}
-      <section className="py-20 border-y border-indigo-950/30 bg-gradient-section-bg">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <div className="text-eyebrow text-emerald-400 mb-3">For Every Stakeholder</div>
-            <h2 className="text-h2 font-heading text-white mb-4">The right view for every role</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">
-              Citizen, officer, planner, administrator — each role sees relevant data with appropriate permissions and workflows.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ROLE_CARDS.map((card, i) => (
-              <motion.div
-                key={card.role}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
-                className="surface-elevated p-5 hover:border-indigo-500/25 transition-all group"
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center"
-                    style={{ background: `${card.color}15`, color: card.color }}
-                  >
-                    {card.icon}
-                  </div>
-                  <div className="font-heading text-base font-semibold text-white">{card.role}</div>
-                </div>
-                <ul className="space-y-2">
-                  {card.features.map(f => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-slate-400">
-                      <CheckCircle2 size={12} style={{ color: card.color }} className="flex-shrink-0 mt-0.5" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          INTELLIGENCE FEATURES
-          ============================================================ */}
-      <section className="py-24 max-w-7xl mx-auto px-6">
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { 
-              icon: <Brain size={24} />, 
-              color: '#6366f1', 
-              title: 'AI Parcel Intelligence', 
-              desc: 'Ask questions about any parcel using actual connected data. Every response cites source datasets and evidence.' 
-            },
-            { 
-              icon: <Satellite size={24} />, 
-              color: '#06b6d4', 
-              title: 'Satellite Monitoring', 
-              desc: 'Bi-annual imagery comparison detects construction, boundary changes and land use shifts before field verification.' 
-            },
-            { 
-              icon: <BarChart3 size={24} />, 
-              color: '#10b981', 
-              title: 'District Analytics', 
-              desc: 'Real-time dashboards showing conflicts by geography, resolution times, data quality scores and SLA tracking.' 
-            },
-          ].map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="surface-card p-6 text-center hover:border-indigo-500/20 transition-all"
-            >
-              <div 
-                className="w-14 h-14 rounded-xl mx-auto mb-4 flex items-center justify-center"
-                style={{ background: `${item.color}12`, color: item.color }}
-              >
-                {item.icon}
-              </div>
-              <h3 className="text-h3 font-heading text-white mb-2">{item.title}</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ============================================================
-          SECURITY & GOVERNANCE
-          ============================================================ */}
-      <section className="py-20 border-y border-indigo-950/30 bg-gradient-section-bg">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="text-eyebrow text-emerald-400 mb-3">Security & Trust</div>
-              <h2 className="text-h2 font-heading text-white mb-6">Built for government-grade governance</h2>
-              
-              <div className="space-y-4">
-                {[
-                  { icon: <Lock size={18} />, title: 'Role-Based Access', desc: 'Granular permissions — citizens see public data, officers see their department, admins see all.' },
-                  { icon: <Shield size={18} />, title: 'Complete Audit Trail', desc: 'Every access, change, and workflow action logged with user, timestamp, and IP address.' },
-                  { icon: <Database size={18} />, title: 'Data Provenance', desc: 'Every record shows source dataset, sync timestamp, and schema version. No unattributed data.' },
-                  { icon: <Eye size={18} />, title: 'Explainable Intelligence', desc: 'LandLens explains and flags — never makes legal determinations. Officers retain authority.' },
-                ].map(item => (
-                  <div key={item.title} className="flex gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-white mb-1">{item.title}</div>
-                      <div className="text-xs text-slate-500 leading-relaxed">{item.desc}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="glass-card p-6">
-              <div className="text-eyebrow mb-4">Audit Trail Sample</div>
-              <div className="space-y-2 text-xs font-mono">
-                {[
-                  { time: '11:30:15', user: 'Revenue Officer', action: 'Viewed Parcel P-0061', color: 'text-cyan-400' },
-                  { time: '11:30:42', user: 'Revenue Officer', action: 'Created Verification Task W004', color: 'text-emerald-400' },
-                  { time: '11:45:00', user: 'Planning Officer', action: 'Updated W003 → In Progress', color: 'text-amber-400' },
-                  { time: '12:00:01', user: 'Citizen', action: 'Submitted Service Request SR001', color: 'text-violet-400' },
-                ].map((log, i) => (
-                  <div key={i} className="flex items-start gap-3 py-2 px-3 rounded bg-slate-900/60 border border-slate-800/60">
-                    <span className="text-slate-500">{log.time}</span>
-                    <span className={log.color}>{log.user}</span>
-                    <span className="text-slate-400 flex-1">{log.action}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================================
-          FINAL CTA
-          ============================================================ */}
-      <section className="py-24 max-w-5xl mx-auto px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">
-            Start with one parcel.
-            <br />
-            <span className="gradient-text">See the entire land story.</span>
-          </h2>
-          <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
-            LandLens connects fragmented land records around every parcel. From data chaos to intelligent governance.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link 
-              href="/login" 
-              className="flex items-center gap-2 px-8 py-4 rounded-xl gradient-primary text-white font-bold text-base hover:opacity-90 transition-opacity shadow-xl shadow-indigo-900/40"
-            >
-              Explore LandLens <ArrowRight size={18} />
-            </Link>
-            <Link 
-              href="/map" 
-              className="flex items-center gap-2 px-8 py-4 rounded-xl bg-slate-800/70 border border-slate-700/60 text-slate-200 font-semibold text-base hover:bg-slate-700/70 transition-colors"
-            >
-              <Map size={18} /> View Live GIS Map
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* ============================================================
-          FOOTER
-          ============================================================ */}
-      <footer className="border-t border-indigo-950/30 bg-slate-950/80 py-12">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-                <span className="text-white text-sm font-bold">LL</span>
-              </div>
-              <div>
-                <div className="font-heading font-bold text-white">LandLens</div>
-                <div className="text-xs text-slate-500">Intelligence Layer for India's Land Stack</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-6 text-sm text-slate-400">
-              <Link href="/technical-architecture" className="hover:text-white transition-colors">Architecture</Link>
-              <Link href="/map" className="hover:text-white transition-colors">Live Map</Link>
-              <Link href="/login" className="hover:text-white transition-colors">Sign In</Link>
-            </div>
-          </div>
-          
-          <div className="mt-8 pt-6 border-t border-indigo-950/30 text-center">
-            <p className="text-xs text-slate-500">
-              Smart India Hackathon 2024 — Land Governance Innovation • Demonstration prototype with synthetic data
-            </p>
-          </div>
-        </div>
-      </footer>
-    </div>
+      <footer className="border-t border-white/[.07] bg-[#07111f] px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="font-mono text-[10px] uppercase tracking-[.2em] text-slate-600">LANDLENS / INTELLIGENCE LAYER FOR INDIA'S LAND STACK</div><div className="flex items-center gap-6 font-mono text-[10px] uppercase tracking-[.15em] text-slate-500"><Link href="/technical-architecture" className="hover:text-cyan-200">Architecture</Link><Link href="/login" className="hover:text-cyan-200">Platform login</Link><Sparkles className="size-3 text-cyan-300" /></div></div></footer>
+    </main>
   );
 }
