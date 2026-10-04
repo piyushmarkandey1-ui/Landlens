@@ -66,7 +66,19 @@ const ROLE_CARDS = [
 
 function ParcelCloud(props: any) {
   const ref = useRef<any>(null);
-  const [sphere] = useState(() => random.inSphere(new Float32Array(4000), { radius: 1.2 }));
+  const [sphere] = useState(() => {
+    const positions = new Float32Array(4000);
+    const generated = random.inSphere(positions, { radius: 1.2 });
+    
+    // Validate and clean the positions array
+    for (let i = 0; i < generated.length; i++) {
+      if (!isFinite(generated[i]) || isNaN(generated[i])) {
+        generated[i] = 0;
+      }
+    }
+    
+    return generated;
+  });
   
   useFrame((state, delta) => {
     if (ref.current) {
