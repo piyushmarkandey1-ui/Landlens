@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -136,16 +136,19 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto bg-grid-pattern-sm">
-          <motion.div
-            key={pathname}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            className="h-full"
-          >
-            {children}
-          </motion.div>
+        <main className="flex-1 overflow-y-auto bg-grid-pattern-sm relative">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={pathname}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="min-h-full"
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
     </div>

@@ -3,12 +3,15 @@
 import { useState, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import {
-  Map, Database, Shield, Zap, ArrowRight, ChevronDown, GitMerge,
+import { Map, Database, Shield, Zap, ArrowRight, ChevronDown, GitMerge,
   AlertTriangle, CheckCircle2, Eye, BarChart3, Layers, Globe,
   FileText, Users, Building2, Landmark, Satellite, Brain,
   Lock, Activity, ChevronRight, Play, Search, Cpu
 } from 'lucide-react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Sphere, PointMaterial, Points } from '@react-three/drei';
+// @ts-expect-error - maath does not have types
+import * as random from 'maath/random/dist/maath-random.esm';
 
 const STATS = [
   { label: 'Land Parcels Across India', value: '630M+', sub: 'addressable via ULPIN' },
@@ -64,6 +67,24 @@ function AnimatedCounter({ value, suffix = '' }: { value: string; suffix?: strin
     >
       {value}
     </motion.span>
+  );
+}
+
+function GeospatialNodes(props: any) {
+  const ref = useRef<any>(null);
+  const [sphere] = useState(() => random.inSphere(new Float32Array(5000), { radius: 1.5 }));
+  useFrame((state, delta) => {
+    if (ref.current) {
+      ref.current.rotation.x -= delta / 10;
+      ref.current.rotation.y -= delta / 15;
+    }
+  });
+  return (
+    <group rotation={[0, 0, Math.PI / 4]}>
+      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
+        <PointMaterial transparent color="#6366f1" size={0.005} sizeAttenuation={true} depthWrite={false} />
+      </Points>
+    </group>
   );
 }
 
@@ -167,61 +188,38 @@ export default function LandingPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="relative mx-auto"
-            style={{ width: 520, maxWidth: '100%', height: 200 }}
+            className="relative mx-auto h-[240px] w-full max-w-[600px] mt-8"
           >
-            {/* Concentric zoom rings */}
-            {[200, 160, 120, 80, 48].map((size, i) => (
-              <motion.div
-                key={i}
-                className="absolute rounded-full border"
-                style={{
-                  width: size, height: size,
-                  left: '50%', top: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  borderColor: `rgba(99, 102, 241, ${0.08 + i * 0.06})`,
-                  background: i === 4 ? 'rgba(99,102,241,0.12)' : 'transparent',
-                }}
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ duration: 3 + i, repeat: Infinity, ease: 'easeInOut' }}
-              />
-            ))}
-            {/* Labels */}
-            {[
-              { label: 'India', size: 200, offset: -16 },
-              { label: 'Chhattisgarh', size: 160, offset: -12 },
-              { label: 'Raipur District', size: 120, offset: -8 },
-              { label: 'Village / Ward', size: 80, offset: -6 },
-              { label: 'Parcel', size: 48, offset: 0 },
-            ].map(({ label, size, offset }, i) => (
-              <div
-                key={i}
-                className="absolute text-center pointer-events-none"
-                style={{ left: '50%', top: `calc(50% - ${size / 2}px + ${offset}px)`, transform: 'translateX(-50%)', whiteSpace: 'nowrap' }}
-              >
-                <span className={`text-xs font-mono ${i === 4 ? 'text-cyan-400 font-bold' : 'text-slate-600'}`}>{label}</span>
-              </div>
-            ))}
-            {/* Center ULPIN */}
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-              <div className="text-center">
-                <div className="text-[10px] font-mono text-indigo-400 font-bold">CG-RJP-0001-0001</div>
-                <div className="text-[9px] text-slate-600 mt-0.5">ULPIN</div>
+            <div className="absolute inset-0 z-0">
+              <Canvas camera={{ position: [0, 0, 1] }}>
+                <GeospatialNodes />
+              </Canvas>
+            </div>
+            
+            {/* Center Overlay */}
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pointer-events-none">
+              {/* Concentric zoom rings */}
+              {[120, 80, 48].map((size, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full border"
+                  style={{
+                    width: size, height: size,
+                    left: '50%', top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    borderColor: `rgba(99, 102, 241, ${0.1 + i * 0.1})`,
+                    background: i === 2 ? 'rgba(99,102,241,0.15)' : 'transparent',
+                    backdropFilter: i === 2 ? 'blur(4px)' : 'none'
+                  }}
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 3 + i, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              ))}
+              <div className="relative z-20">
+                <div className="text-[11px] font-mono text-cyan-300 font-bold bg-slate-900/80 px-2 py-0.5 rounded border border-cyan-500/30">CG-RJP-0001-0001</div>
+                <div className="text-[9px] text-slate-400 mt-1 uppercase tracking-widest text-center">ULPIN</div>
               </div>
             </div>
-
-            {/* Orbiting data nodes */}
-            {['RoR', 'Reg', 'Tax', 'Plan', 'Sat'].map((label, i) => (
-              <motion.div
-                key={label}
-                className="absolute w-8 h-8 rounded-full bg-slate-900 border border-indigo-500/40 flex items-center justify-center"
-                style={{ left: '50%', top: '50%', transformOrigin: '-60px 0' }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 12 + i * 3, repeat: Infinity, ease: 'linear', delay: i * 2 }}
-              >
-                <span className="text-[8px] text-indigo-300 font-bold">{label}</span>
-              </motion.div>
-            ))}
           </motion.div>
         </motion.div>
 
