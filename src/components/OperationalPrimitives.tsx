@@ -9,7 +9,7 @@ export function SectionHeader({ title, subtitle, action }: { title: string; subt
   return (
     <div className="flex items-start justify-between gap-4 mb-3">
       <div>
-        <h2 className="font-heading font-semibold text-sm text-white">{title}</h2>
+        <h2 className="font-heading font-semibold text-sm text-slate-900">{title}</h2>
         {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
       </div>
       {action}
@@ -22,16 +22,16 @@ export function KpiGrid({ metrics, columns = 3 }: { metrics: KpiMetric[]; column
   return (
     <div className={`grid ${grid} gap-3`}>
       {metrics.map(metric => (
-        <Link key={metric.id} href={metric.href} className="surface-elevated p-3.5 min-w-0 hover:border-indigo-500/35 transition-colors group">
+        <Link key={metric.id} href={metric.href} className="surface-elevated p-3.5 min-w-0 bg-white border border-slate-200/80 rounded-xl hover:border-blue-400 hover:shadow-md transition-all group">
           <div className="flex items-start justify-between gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${metric.color}18`, color: metric.color }}>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: `${metric.color}15`, color: metric.color }}>
               <span className="text-sm font-bold">{String(metric.value).length > 5 ? '#' : '•'}</span>
             </div>
-            <ArrowUpRight size={13} className="text-slate-700 group-hover:text-indigo-400 transition-colors" />
+            <ArrowUpRight size={13} className="text-slate-400 group-hover:text-blue-600 transition-colors" />
           </div>
-          <div className="font-heading font-bold text-xl text-white mt-3 truncate">{metric.value}</div>
-          <div className="text-xs text-slate-400 truncate mt-0.5">{metric.label}</div>
-          <div className="text-[10px] text-slate-600 truncate mt-1">{metric.detail}</div>
+          <div className="font-heading font-bold text-xl text-slate-900 mt-3 truncate">{metric.value}</div>
+          <div className="text-xs text-slate-600 truncate mt-0.5 font-medium">{metric.label}</div>
+          <div className="text-[10px] text-slate-400 truncate mt-1">{metric.detail}</div>
         </Link>
       ))}
     </div>
@@ -40,17 +40,17 @@ export function KpiGrid({ metrics, columns = 3 }: { metrics: KpiMetric[]; column
 
 export function StatusPill({ value, tone = 'neutral' }: { value: string; tone?: 'success' | 'warning' | 'danger' | 'info' | 'neutral' }) {
   const styles = {
-    success: 'bg-emerald-500/12 text-emerald-400 border-emerald-500/20',
-    warning: 'bg-amber-500/12 text-amber-400 border-amber-500/20',
-    danger: 'bg-red-500/12 text-red-400 border-red-500/20',
-    info: 'bg-cyan-500/12 text-cyan-400 border-cyan-500/20',
-    neutral: 'bg-slate-700/60 text-slate-400 border-slate-700',
+    success: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    warning: 'bg-amber-50 text-amber-800 border-amber-200',
+    danger: 'bg-rose-50 text-rose-700 border-rose-200',
+    info: 'bg-blue-50 text-blue-700 border-blue-200',
+    neutral: 'bg-slate-100 text-slate-700 border-slate-200',
   };
-  return <span className={`chip text-[9px] border ${styles[tone]}`}>{value}</span>;
+  return <span className={`chip text-[10px] font-medium border px-2 py-0.5 rounded-md ${styles[tone]}`}>{value}</span>;
 }
 
-export function ProgressBar({ value, color = '#6366f1' }: { value: number; color?: string }) {
-  return <div className="score-bar"><div className="score-bar-fill" style={{ width: `${Math.min(value, 100)}%`, background: color }} /></div>;
+export function ProgressBar({ value, color = '#2563eb' }: { value: number; color?: string }) {
+  return <div className="score-bar h-1.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60"><div className="score-bar-fill h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(value, 100)}%`, background: color }} /></div>;
 }
 
 export function DetailLink({ href, children }: { href: string; children: ReactNode }) {

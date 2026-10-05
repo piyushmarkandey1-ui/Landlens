@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { GitMerge, ArrowRight, CheckCircle2, Search, ShieldAlert } from 'lucide-react';
+import { GitMerge, ArrowRight, CheckCircle2, Search, ShieldAlert, MapPin } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import AppShell from '@/components/AppShell';
 import { ENCUMBRANCES, SERVICE_REQUESTS } from '@/lib/data';
@@ -19,7 +19,9 @@ export default function RegistrationPage() {
   const [tab, setTab] = useState<RegistrationTab>(() => {
     if (typeof window === 'undefined') return 'transactions';
     const queryTab = new URLSearchParams(window.location.search).get('tab');
-    return queryTab === 'transactions' || queryTab === 'encumbrances' || queryTab === 'services' ? queryTab : 'transactions';
+    return queryTab === 'transactions' || queryTab === 'encumbrances' || queryTab === 'services'
+      ? queryTab
+      : 'transactions';
   });
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -29,21 +31,362 @@ export default function RegistrationPage() {
   }, [isAuthenticated, router]);
 
   const metrics = getRegistrationMetrics();
-  const transactions = useMemo(() => getRegistrationTransactions().filter(item => !search || `${item.parcelId} ${item.documentNo} ${item.buyer} ${item.seller}`.toLowerCase().includes(search.toLowerCase())), [search]);
+  const transactions = useMemo(
+    () =>
+      getRegistrationTransactions().filter(
+        item =>
+          !search ||
+          `${item.parcelId} ${item.documentNo} ${item.buyer} ${item.seller}`
+            .toLowerCase()
+            .includes(search.toLowerCase())
+      ),
+    [search]
+  );
   const selected = transactions.find(item => item.registrationId === selectedId) || transactions[0];
 
   return (
     <AppShell>
-      <div className="p-5 lg:p-6 max-w-7xl mx-auto">
-        <div className="flex items-start justify-between gap-4 mb-5"><div><div className="text-[10px] text-violet-400 uppercase tracking-widest font-medium mb-1">Registration Operations</div><h1 className="font-heading font-bold text-2xl text-white flex items-center gap-2"><GitMerge size={20} className="text-violet-400" /> Registration Officer Console</h1><p className="text-sm text-slate-500 mt-1">Document verification, transaction timelines and encumbrance review.</p></div><Link href="/map" className="flex items-center gap-1.5 text-xs text-cyan-400 border border-cyan-500/20 rounded-lg px-3 py-2">Open GIS workspace</Link></div>
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-purple-50 text-purple-700 border border-purple-200/80 mb-2">
+              <GitMerge size={11} /> Registration & Stamps Department
+            </div>
+            <h1 className="font-heading font-bold text-2xl lg:text-3xl text-slate-900 tracking-tight">
+              Registration Officer Console
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+              Deed registration validation, encumbrance verification, cross-agency mutation checks, and citizen certificate requests.
+            </p>
+          </div>
+          <Link
+            href="/map"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200 px-4 py-2.5 rounded-xl transition-all shadow-2xs self-start sm:self-auto"
+          >
+            <MapPin size={14} /> Open GIS Workspace
+          </Link>
+        </div>
+
+        {/* Operational Metrics */}
         <KpiGrid metrics={metrics} columns={5} />
-        <div className="flex flex-wrap items-center gap-1 mt-6 mb-4 border-b border-indigo-950/50 pb-2">{([['transactions', 'Transaction Review'], ['encumbrances', 'Encumbrances'], ['services', 'Document Requests']] as [RegistrationTab, string][]).map(([id, label]) => <button key={id} onClick={() => setTab(id)} className={`px-3 py-1.5 rounded text-xs font-medium ${tab === id ? 'bg-indigo-600/25 text-indigo-300 border border-indigo-500/25' : 'text-slate-500 hover:text-slate-300'}`}>{label}</button>)}<div className="ml-auto flex items-center gap-2"><Search size={13} className="text-slate-600" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search document, parcel, buyer" className="form-input text-xs w-56" /></div></div>
 
-        {tab === 'transactions' && <div className="grid xl:grid-cols-[1fr_410px] gap-4"><div className="surface-card overflow-hidden"><div className="px-4 py-3 border-b border-indigo-950/40"><SectionHeader title="Registration Verification Queue" subtitle={`${transactions.length} transaction records · conflicts link to source evidence`} /></div><div className="overflow-x-auto"><table className="data-table min-w-[900px]"><thead><tr><th>Document</th><th>Parcel</th><th>Buyer / Seller</th><th>Date</th><th>Amount</th><th>Area</th><th>Verification</th><th /></tr></thead><tbody>{transactions.map(item => <tr key={item.registrationId} className={selected?.registrationId === item.registrationId ? 'bg-indigo-950/30' : ''}><td className="font-mono text-xs text-cyan-300">{item.documentNo}</td><td><Link href={`/parcels/${item.parcelId}`} className="font-mono text-xs text-indigo-400">{item.parcelId}</Link></td><td><div className="text-xs text-slate-200">{item.buyer}</div><div className="text-[10px] text-slate-600">from {item.seller}</div></td><td className="text-xs">{item.date}</td><td className="font-mono text-xs">₹{(item.amount / 100000).toFixed(1)}L</td><td className="font-mono text-xs">{item.areaAcres} ac</td><td><StatusPill value={item.verificationStatus} tone={verificationTone[item.verificationStatus]} /></td><td><button onClick={() => setSelectedId(item.registrationId)} className="text-indigo-400"><ArrowRight size={14} /></button></td></tr>)}</tbody></table></div></div>{selected && <div className="surface-card p-4 h-fit"><div className="flex items-start justify-between gap-3 mb-4"><div><div className="text-[10px] uppercase tracking-wider text-violet-400">Transaction Timeline</div><h2 className="font-heading font-bold text-lg text-white mt-1">{selected.documentNo}</h2><Link href={`/parcels/${selected.parcelId}`} className="font-mono text-xs text-indigo-400">{selected.parcelId}</Link></div><StatusPill value={selected.verificationStatus} tone={verificationTone[selected.verificationStatus]} /></div><div className="relative ml-2 border-l border-indigo-500/25 pl-5 space-y-5">{selected.timeline.map((entry, index) => <div key={`${entry.date}-${entry.title}-${index}`} className="relative"><div className={`absolute -left-[25px] top-0.5 w-3 h-3 rounded-full border-2 border-slate-950 ${entry.status === 'completed' ? 'bg-emerald-400' : entry.status === 'attention' ? 'bg-red-400' : 'bg-amber-400'}`} /><div className="flex items-center gap-2"><span className="font-mono text-[10px] text-slate-600">{entry.date}</span><StatusPill value={entry.dataset} /></div><div className="text-xs font-semibold text-slate-200 mt-1">{entry.title}</div><div className="text-[11px] text-slate-500 mt-0.5">{entry.description}</div></div>)}</div>{selected.conflicts.length > 0 && <div className="mt-4 pt-3 border-t border-slate-800/50"><div className="text-[10px] uppercase tracking-wider text-red-400 mb-2">Verification attention</div>{selected.conflicts.map(conflict => <div key={conflict} className="flex gap-2 text-xs text-slate-400 mb-1"><ShieldAlert size={12} className="text-red-400 flex-shrink-0" />{conflict}</div>)}</div>}<Link href={`/parcels/${selected.parcelId}`} className="mt-4 flex items-center justify-center gap-2 w-full py-2 rounded-lg gradient-primary text-white text-xs font-semibold">Open Parcel 360 evidence <ArrowRight size={12} /></Link></div>}</div>}
+        {/* Tab Bar & Search */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100/80 border border-slate-200/80 rounded-xl">
+            {(
+              [
+                ['transactions', 'Transaction & Deed Review'],
+                ['encumbrances', 'Encumbrances & Mortgages'],
+                ['services', 'Certificate Requests'],
+              ] as [RegistrationTab, string][]
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                onClick={() => setTab(id)}
+                className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  tab === id
+                    ? 'bg-white text-slate-900 shadow-xs border border-slate-200/90'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/50 border border-transparent'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
 
-        {tab === 'encumbrances' && <div className="surface-card overflow-auto"><table className="data-table min-w-[850px]"><thead><tr><th>Registration</th><th>Parcel</th><th>Type</th><th>Creditor</th><th>Amount</th><th>Period</th><th>Status</th></tr></thead><tbody>{ENCUMBRANCES.map(item => <tr key={item.id}><td className="font-mono text-xs">{item.registrationNo}</td><td><Link href={`/parcels/${item.parcelId}`} className="font-mono text-xs text-indigo-400">{item.parcelId}</Link></td><td><StatusPill value={item.type} tone={item.type === 'Mortgage' ? 'warning' : 'info'} /></td><td className="text-xs">{item.creditorName}</td><td className="font-mono text-xs">{item.amount ? `₹${(item.amount / 100000).toFixed(1)}L` : '—'}</td><td className="text-xs">{item.startDate} → {item.endDate || 'open'}</td><td><StatusPill value={item.status} tone={item.status === 'Active' ? 'warning' : 'success'} /></td></tr>)}</tbody></table></div>}
-        {tab === 'services' && <div className="surface-card overflow-auto"><table className="data-table min-w-[850px]"><thead><tr><th>Tracking</th><th>Citizen</th><th>Type</th><th>Parcel</th><th>Status</th><th>Submitted</th><th>Expected</th><th>Officer</th></tr></thead><tbody>{SERVICE_REQUESTS.filter(item => item.department.includes('Registration') || item.type === 'Encumbrance Certificate').map(item => <tr key={item.id}><td className="font-mono text-xs text-cyan-300">{item.trackingId}</td><td className="text-xs">{item.citizenName}</td><td><StatusPill value={item.type} tone="info" /></td><td><Link href={`/parcels/${item.parcelId}`} className="font-mono text-xs text-indigo-400">{item.parcelId}</Link></td><td><StatusPill value={item.status} tone={item.status === 'Completed' ? 'success' : 'warning'} /></td><td className="text-xs">{item.submittedDate}</td><td className="text-xs">{item.expectedDate}</td><td className="text-xs text-slate-500">{item.assignedOfficer || 'Unassigned'}</td></tr>)}</tbody></table></div>}
-        <div className="mt-4 text-[10px] text-slate-600 flex items-center gap-1"><CheckCircle2 size={11} className="text-emerald-500" /> Verification flags are based on synthetic cross-dataset records and require document review.</div>
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search document, parcel, buyer…"
+              className="w-full sm:w-64 pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-2xs"
+            />
+          </div>
+        </div>
+
+        {/* Tab 1: Transaction Review */}
+        {tab === 'transactions' && (
+          <div className="grid xl:grid-cols-[1fr_420px] gap-5 items-start">
+            {/* Table */}
+            <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+              <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+                <SectionHeader
+                  title="Deed Verification Queue"
+                  subtitle={`${transactions.length} deeds requiring title consistency checks`}
+                />
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                      <th className="p-3.5">Document No.</th>
+                      <th className="p-3.5">Parcel</th>
+                      <th className="p-3.5">Parties</th>
+                      <th className="p-3.5">Date</th>
+                      <th className="p-3.5">Consideration</th>
+                      <th className="p-3.5">Deed Area</th>
+                      <th className="p-3.5">Status</th>
+                      <th className="p-3.5 text-right">Inspect</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {transactions.map(item => (
+                      <tr
+                        key={item.registrationId}
+                        onClick={() => setSelectedId(item.registrationId)}
+                        className={`cursor-pointer transition-colors ${
+                          selected?.registrationId === item.registrationId
+                            ? 'bg-blue-50/70 border-l-4 border-l-blue-600'
+                            : 'hover:bg-slate-50/80 border-l-4 border-l-transparent'
+                        }`}
+                      >
+                        <td className="p-3.5 font-mono font-bold text-slate-900">{item.documentNo}</td>
+                        <td className="p-3.5">
+                          <span className="font-mono font-bold text-blue-600">{item.parcelId}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <div className="font-medium text-slate-900">{item.buyer}</div>
+                          <div className="text-[10px] text-slate-400">from {item.seller}</div>
+                        </td>
+                        <td className="p-3.5 text-slate-500">{item.date}</td>
+                        <td className="p-3.5 font-mono text-slate-700 font-medium">
+                          ₹{(item.amount / 100000).toFixed(1)}L
+                        </td>
+                        <td className="p-3.5 font-mono text-slate-600">{item.areaAcres} ac</td>
+                        <td className="p-3.5">
+                          <StatusPill
+                            value={item.verificationStatus}
+                            tone={verificationTone[item.verificationStatus]}
+                          />
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button className="text-blue-600 hover:text-blue-800">
+                            <ArrowRight size={13} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Selected Transaction Detail */}
+            {selected && (
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-xs p-5 space-y-5 sticky top-6">
+                <div className="flex items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                  <div>
+                    <span className="text-[10px] font-bold font-mono tracking-wider text-purple-600 uppercase">
+                      Deed Audit Trail
+                    </span>
+                    <h2 className="font-heading font-bold text-lg text-slate-900 mt-0.5">
+                      {selected.documentNo}
+                    </h2>
+                    <Link
+                      href={`/parcels/${selected.parcelId}`}
+                      className="font-mono text-xs font-bold text-blue-600 hover:underline"
+                    >
+                      Parcel: {selected.parcelId}
+                    </Link>
+                  </div>
+                  <StatusPill
+                    value={selected.verificationStatus}
+                    tone={verificationTone[selected.verificationStatus]}
+                  />
+                </div>
+
+                {/* Timeline */}
+                <div>
+                  <div className="text-[10px] uppercase font-bold tracking-wider text-slate-400 mb-3">
+                    Verification Milestones
+                  </div>
+                  <div className="relative ml-2 border-l border-slate-200 pl-4 space-y-4">
+                    {selected.timeline.map((entry, index) => (
+                      <div key={`${entry.date}-${entry.title}-${index}`} className="relative">
+                        <div
+                          className={`absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full ring-4 ring-white ${
+                            entry.status === 'completed'
+                              ? 'bg-emerald-500'
+                              : entry.status === 'attention'
+                              ? 'bg-rose-500'
+                              : 'bg-amber-500'
+                          }`}
+                        />
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[10px] text-slate-400">{entry.date}</span>
+                          <span className="text-[9px] px-1.5 py-0.2 bg-slate-100 rounded text-slate-600 font-medium">
+                            {entry.dataset}
+                          </span>
+                        </div>
+                        <div className="text-xs font-semibold text-slate-900 mt-1">{entry.title}</div>
+                        <div className="text-[11px] text-slate-500 mt-0.5 leading-relaxed">{entry.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Conflicts / Attention */}
+                {selected.conflicts.length > 0 && (
+                  <div className="pt-3 border-t border-slate-100">
+                    <div className="text-[10px] uppercase font-bold tracking-wider text-rose-600 mb-2">
+                      Cross-Agency Discrepancies
+                    </div>
+                    <div className="space-y-1.5">
+                      {selected.conflicts.map(conflict => (
+                        <div
+                          key={conflict}
+                          className="flex gap-2 text-xs text-rose-700 bg-rose-50 p-2.5 rounded-lg border border-rose-200"
+                        >
+                          <ShieldAlert size={14} className="text-rose-600 flex-shrink-0 mt-0.5" />
+                          <span className="leading-tight">{conflict}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Action */}
+                <div className="pt-4 border-t border-slate-100">
+                  <Link
+                    href={`/parcels/${selected.parcelId}`}
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all shadow-sm"
+                  >
+                    Open Comprehensive Parcel 360 <ArrowRight size={13} />
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab 2: Encumbrances */}
+        {tab === 'encumbrances' && (
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+              <SectionHeader
+                title="Encumbrance & Mortgage Register (Form 15/16)"
+                subtitle="Bank charges, court injunctions, and financial liabilities registered against parcels"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Charge Registration</th>
+                    <th className="p-3.5">Parcel ID</th>
+                    <th className="p-3.5">Encumbrance Type</th>
+                    <th className="p-3.5">Financial Creditor</th>
+                    <th className="p-3.5">Claim Amount</th>
+                    <th className="p-3.5">Period Covered</th>
+                    <th className="p-3.5">Current Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {ENCUMBRANCES.map(item => (
+                    <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="p-3.5 font-mono font-bold text-slate-900">{item.registrationNo}</td>
+                      <td className="p-3.5">
+                        <Link
+                          href={`/parcels/${item.parcelId}`}
+                          className="font-mono font-bold text-blue-600 hover:underline"
+                        >
+                          {item.parcelId}
+                        </Link>
+                      </td>
+                      <td className="p-3.5">
+                        <StatusPill
+                          value={item.type}
+                          tone={item.type === 'Mortgage' ? 'warning' : 'info'}
+                        />
+                      </td>
+                      <td className="p-3.5 font-medium text-slate-900">{item.creditorName}</td>
+                      <td className="p-3.5 font-mono text-slate-700">
+                        {item.amount ? `₹${(item.amount / 100000).toFixed(1)}L` : '—'}
+                      </td>
+                      <td className="p-3.5 text-slate-500">
+                        {item.startDate} → {item.endDate || 'Ongoing'}
+                      </td>
+                      <td className="p-3.5">
+                        <StatusPill
+                          value={item.status}
+                          tone={item.status === 'Active' ? 'warning' : 'success'}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Tab 3: Citizen Service Requests */}
+        {tab === 'services' && (
+          <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50/50">
+              <SectionHeader
+                title="Public Certificate & Verification Applications"
+                subtitle="Encumbrance certificates (EC), certified deed copies, and title verification requests"
+              />
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[10px]">
+                    <th className="p-3.5">Tracking Number</th>
+                    <th className="p-3.5">Citizen Applicant</th>
+                    <th className="p-3.5">Service Requested</th>
+                    <th className="p-3.5">Parcel</th>
+                    <th className="p-3.5">Application Status</th>
+                    <th className="p-3.5">Submission Date</th>
+                    <th className="p-3.5">SLA Deadline</th>
+                    <th className="p-3.5">Assigned Officer</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {SERVICE_REQUESTS.filter(
+                    item => item.department.includes('Registration') || item.type === 'Encumbrance Certificate'
+                  ).map(item => (
+                    <tr key={item.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="p-3.5 font-mono font-bold text-slate-900">{item.trackingId}</td>
+                      <td className="p-3.5 font-medium text-slate-900">{item.citizenName}</td>
+                      <td className="p-3.5">
+                        <StatusPill value={item.type} tone="info" />
+                      </td>
+                      <td className="p-3.5">
+                        <Link
+                          href={`/parcels/${item.parcelId}`}
+                          className="font-mono font-bold text-blue-600 hover:underline"
+                        >
+                          {item.parcelId}
+                        </Link>
+                      </td>
+                      <td className="p-3.5">
+                        <StatusPill
+                          value={item.status}
+                          tone={item.status === 'Completed' ? 'success' : 'warning'}
+                        />
+                      </td>
+                      <td className="p-3.5 text-slate-500">{item.submittedDate}</td>
+                      <td className="p-3.5 text-slate-500">{item.expectedDate}</td>
+                      <td className="p-3.5 text-slate-600">{item.assignedOfficer || 'Auto-Allocated'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Footer */}
+        <div className="flex items-center gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500">
+          <CheckCircle2 size={13} className="text-emerald-600 flex-shrink-0" />
+          <span>
+            Demonstration mode: Deed verification cross-matches Registration e-Panjeeyan data with Revenue Bhuiyan databases.
+          </span>
+        </div>
       </div>
     </AppShell>
   );
