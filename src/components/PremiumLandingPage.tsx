@@ -279,7 +279,7 @@ export default function PremiumLandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-heading font-bold text-4xl lg:text-5xl mb-6">
-              Don&apos;t Just Store the Data.<br />Understand It.
+              Don't Just Store the Data.<br />Understand It.
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               LandLens compares information from multiple sources to identify where records agree, where they differ and where human verification may be required.

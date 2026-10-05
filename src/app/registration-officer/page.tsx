@@ -166,7 +166,7 @@ export default function RegistrationOfficerPage() {
 
             {/* Quick Stats */}
             <div className="surface-card p-5">
-              <h2 className="font-heading font-semibold text-white mb-4">Today&apos;s Activity</h2>
+              <h2 className="font-heading font-semibold text-white mb-4">Today's Activity</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-slate-400">Registrations</span>
