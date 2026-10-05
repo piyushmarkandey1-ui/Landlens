@@ -22,10 +22,10 @@ function transpile(source, fileName) {
 }
 
 function loadModule(source, fileName, dependencies = {}) {
-  const module = { exports: {} };
+  const moduleExports = { exports: {} };
   const context = vm.createContext({
-    module,
-    exports: module.exports,
+    module: moduleExports,
+    exports: moduleExports.exports,
     require: (request) => dependencies[request] ?? require(request),
     console,
   });

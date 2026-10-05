@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'node:fs';
 
 function fixEslintErrors() {
   const replaceAny = (content) => content.replace(/:\s*any/g, ': unknown');

@@ -17,6 +17,7 @@ const metrics = [
 ];
 
 function ParcelField() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref = useRef<any>(null);
   const [positions] = useState(() => random.inSphere(new Float32Array(4200), { radius: 1.3 }));
   useFrame((_, delta) => {
@@ -51,7 +52,7 @@ function ParcelDiagram() {
         const positions = ['left-[8%] top-[25%]', 'left-[4%] top-[63%]', 'right-[7%] top-[18%]', 'right-[3%] top-[43%]', 'right-[12%] bottom-[16%]', 'left-[24%] bottom-[8%]'];
         return <div key={source} className={`absolute ${positions[i]} flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.16em] text-slate-400`}><span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_10px_#22d3ee]" />{source}</div>;
       })}
-      <div className="absolute bottom-5 left-5 font-mono text-[9px] uppercase tracking-[.18em] text-slate-600">21°15'N · 81°37'E / RAIPUR</div>
+      <div className="absolute bottom-5 left-5 font-mono text-[9px] uppercase tracking-[.18em] text-slate-600">21°15&apos;N · 81°37&apos;E / RAIPUR</div>
       <div className="absolute right-5 top-5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.18em] text-emerald-300"><span className="size-1.5 animate-pulse rounded-full bg-emerald-300" /> Live parcel model</div>
     </div>
   );
@@ -85,7 +86,7 @@ export default function LandingPage() {
 
       <section className="border-t border-white/[.07] bg-[#f7f9fc] px-6 py-24 text-[#07111f] lg:px-12"><div className="mx-auto grid max-w-[1440px] items-end gap-12 lg:grid-cols-[1fr_1fr]"><div><div className="eyebrow text-[#087f8c]">Built for the land stack</div><h2 className="mt-5 max-w-lg font-heading text-4xl font-semibold leading-tight tracking-[-.04em]">A calmer way to navigate complexity.</h2></div><div className="grid gap-3 sm:grid-cols-2"><Link href="/citizen" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Map className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For citizens</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Find your land, understand restrictions and request service without the maze.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/dashboard" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Layers3 className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For institutions</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Govern parcels, conflicts and workflows from one operational view.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link></div></div></section>
 
-      <footer className="border-t border-white/[.07] bg-[#07111f] px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="font-mono text-[10px] uppercase tracking-[.2em] text-slate-600">LANDLENS / INTELLIGENCE LAYER FOR INDIA'S LAND STACK</div><div className="flex items-center gap-6 font-mono text-[10px] uppercase tracking-[.15em] text-slate-500"><Link href="/technical-architecture" className="hover:text-cyan-200">Architecture</Link><Link href="/login" className="hover:text-cyan-200">Platform login</Link><Sparkles className="size-3 text-cyan-300" /></div></div></footer>
+      <footer className="border-t border-white/[.07] bg-[#07111f] px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="font-mono text-[10px] uppercase tracking-[.2em] text-slate-600">LANDLENS / INTELLIGENCE LAYER FOR INDIA&apos;S LAND STACK</div><div className="flex items-center gap-6 font-mono text-[10px] uppercase tracking-[.15em] text-slate-500"><Link href="/technical-architecture" className="hover:text-cyan-200">Architecture</Link><Link href="/login" className="hover:text-cyan-200">Platform login</Link><Sparkles className="size-3 text-cyan-300" /></div></div></footer>
     </main>
   );
 }

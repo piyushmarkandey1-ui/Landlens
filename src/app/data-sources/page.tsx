@@ -197,7 +197,7 @@ export default function DataSourcesPage() {
         <div className="mt-6 p-4 rounded-xl bg-amber-500/5 border border-amber-500/15 text-xs text-amber-400/80">
           <strong>Note:</strong> CONNECTED status will only be set when a real government API is live and verified.
           All current sources are SIMULATED (demo connector), STALE (outdated batch import), or UNAVAILABLE (planned).
-          In production, adapter interfaces connect to each department's actual API or secure database export.
+          In production, adapter interfaces connect to each department&apos;s actual API or secure database export.
         </div>
       </div>
     </AppShell>

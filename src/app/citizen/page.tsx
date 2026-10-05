@@ -591,7 +591,7 @@ function CitizenAI({ parcel }: { parcel: Parcel }) {
                       onClick={() => handleSend(p.q)}
                       className="w-full text-left text-xs px-3 py-2.5 rounded-lg bg-slate-800/60 border border-slate-700/40 text-slate-300 hover:border-indigo-500/40 hover:text-slate-200 transition-colors"
                     >
-                      "{p.q}"
+                      &quot;{p.q}&quot;
                     </button>
                   ))}
                 </div>
@@ -900,7 +900,7 @@ export default function CitizenPage() {
 
             {trackQuery && !trackedReq && (
               <div className="citizen-card text-center py-8 text-slate-500 text-sm">
-                No application found for "{trackQuery}". Try one of the sample IDs above.
+                No application found for &quot;{trackQuery}&quot;. Try one of the sample IDs above.
               </div>
             )}
           </motion.div>
@@ -965,7 +965,7 @@ export default function CitizenPage() {
               ].map(tab => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
+                  onClick={() => setActiveTab(tab.id as 'info' | 'build' | 'services')}
                   className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-2.5 rounded-xl text-xs font-medium transition-all ${
                     activeTab === tab.id
                       ? 'bg-indigo-600/30 text-indigo-300 border border-indigo-500/30'
