@@ -1,91 +1,541 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
-import { ArrowUpRight, ChevronRight, CircleDot, Database, FileCheck2, GitMerge, Layers3, Map, Play, ScanLine, Search, ShieldCheck, Sparkles, Waypoints } from 'lucide-react';
+import {
+  ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight,
+  Database, FileCheck2, GitMerge, Layers, MapPin,
+  Play, Shield, ShieldCheck, Sparkles, Waypoints,
+  FileText, Users, Eye, Activity
+} from 'lucide-react';
 // @ts-expect-error maath ships without types
 import * as random from 'maath/random/dist/maath-random.esm';
 
-const sources = ['RoR', 'Registration', 'Zoning', 'Master Plan', 'Tax', 'Satellite'];
-const metrics = [
-  ['630M+', 'addressable parcels'],
-  ['10+', 'connected datasets'],
-  ['4.2×', 'faster resolution'],
+const sources = [
+  { name: 'Record of Rights', code: 'BHU-RoR', records: '8.9M', status: 'Live Sync', desc: 'Ownership, tenancy, mutation history' },
+  { name: 'Cadastral Maps', code: 'BNAKSHA', records: '6.2M', status: 'Geo-rectified', desc: 'Polygon boundaries, geo-coordinates' },
+  { name: 'Registration', code: 'DORIS', records: '4.1M', status: 'Active', desc: 'Deed registration, encumbrances' },
+  { name: 'Master Plan 2031', code: 'RDA-GIS', records: '48 Zones', status: 'Enforced', desc: 'Zoning classification, road buffers' },
+  { name: 'Municipal Tax', code: 'RMC-TAX', records: '1.2M', status: 'Connected', desc: 'Assessment IDs, utility linkage' },
+  { name: 'Satellite AI', code: 'ISRO-CART', records: 'Monthly', status: 'Monitoring', desc: 'Encroachment & change detection' },
 ];
 
-function ParcelField() {
+const metrics = [
+  { value: '630M+', label: 'Addressable Parcels', sub: 'National scope' },
+  { value: '10+', label: 'Connected Registries', sub: 'Real-time sync' },
+  { value: '4.2×', label: 'Faster Resolution', sub: 'Dispute turnaround' },
+  { value: '100%', label: 'ULPIN Compliant', sub: 'Standardized cadastre' },
+];
+
+function ParcelPointField() {
   const ref = useRef<any>(null);
-  const [positions] = useState(() => random.inSphere(new Float32Array(4200), { radius: 1.3 }));
+  const [positions] = useState(() => random.inSphere(new Float32Array(3600), { radius: 1.25 }));
+
   useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.rotation.y += delta * 0.035;
-      ref.current.rotation.x = Math.sin(Date.now() / 7000) * 0.08;
+      ref.current.rotation.y += delta * 0.04;
+      ref.current.rotation.x = Math.sin(Date.now() / 6000) * 0.06;
     }
   });
+
   return (
-    <group rotation={[0.15, 0, -0.2]}>
+    <group rotation={[0.15, 0, -0.15]}>
       <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-        <PointMaterial transparent color="#22d3ee" size={0.006} sizeAttenuation depthWrite={false} opacity={0.48} />
+        <PointMaterial
+          transparent
+          color="#38bdf8"
+          size={0.007}
+          sizeAttenuation
+          depthWrite={false}
+          opacity={0.65}
+        />
       </Points>
     </group>
   );
 }
 
-function ParcelDiagram() {
+function ParcelConsole() {
+  const [activeLayer, setActiveLayer] = useState<'all' | 'ror' | 'zoning' | 'satellite'>('all');
+
   return (
-    <div className="relative aspect-square w-full max-w-[600px] overflow-hidden border border-cyan-300/15 bg-[#0b1728]/80 shadow-[0_40px_120px_rgba(0,0,0,.45)]">
-      <div className="absolute inset-0 parcel-grid-bg opacity-30" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_46%,rgba(34,211,238,.16),transparent_34%),radial-gradient(circle_at_55%_55%,rgba(52,211,153,.1),transparent_52%)]" />
-      <Canvas camera={{ position: [0, 0, 1.1], fov: 48 }}>
-        <ambientLight intensity={0.6} />
-        <ParcelField />
-      </Canvas>
-      <div className="absolute inset-[18%] border border-cyan-300/20 [clip-path:polygon(8%_16%,88%_4%,96%_72%,60%_96%,4%_78%)]" />
-      <div className="absolute inset-[29%] border border-emerald-300/45 [clip-path:polygon(9%_18%,87%_4%,96%_74%,60%_96%,4%_78%)]" />
-      <div className="absolute left-1/2 top-1/2 size-20 -translate-x-1/2 -translate-y-1/2 border border-cyan-200 bg-cyan-300/10 shadow-[0_0_45px_rgba(34,211,238,.45)] [clip-path:polygon(8%_16%,88%_4%,96%_72%,60%_96%,4%_78%)]" />
-      <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 translate-y-12 items-center gap-2 font-mono text-[9px] uppercase tracking-[.2em] text-cyan-200"><CircleDot className="size-3" /> P-00427 / ACTIVE</div>
-      {sources.map((source, i) => {
-        const positions = ['left-[8%] top-[25%]', 'left-[4%] top-[63%]', 'right-[7%] top-[18%]', 'right-[3%] top-[43%]', 'right-[12%] bottom-[16%]', 'left-[24%] bottom-[8%]'];
-        return <div key={source} className={`absolute ${positions[i]} flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.16em] text-slate-400`}><span className="size-1.5 rounded-full bg-cyan-300 shadow-[0_0_10px_#22d3ee]" />{source}</div>;
-      })}
-      <div className="absolute bottom-5 left-5 font-mono text-[9px] uppercase tracking-[.18em] text-slate-600">21°15'N · 81°37'E / RAIPUR</div>
-      <div className="absolute right-5 top-5 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.18em] text-emerald-300"><span className="size-1.5 animate-pulse rounded-full bg-emerald-300" /> Live parcel model</div>
+    <div className="relative w-full max-w-xl mx-auto rounded-2xl border border-cyan-500/20 bg-slate-950/80 backdrop-blur-2xl shadow-[0_24px_64px_-12px_rgba(0,0,0,0.7)] overflow-hidden">
+      {/* Top telemetry bar */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.08] bg-white/[0.02]">
+        <div className="flex items-center gap-2 font-mono text-[11px] text-slate-400">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          <span className="text-slate-300 font-medium">ULPIN: CG-RPR-492001-00427</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[10px] text-cyan-400/90 bg-cyan-950/60 border border-cyan-800/50 px-2 py-0.5 rounded-md">
+            21°15&apos;32&quot;N · 81°37&apos;48&quot;E
+          </span>
+        </div>
+      </div>
+
+      {/* Visual Canvas Area */}
+      <div className="relative h-[320px] w-full bg-[radial-gradient(ellipse_at_center,rgba(14,165,233,0.12),transparent_70%)]">
+        {/* Subtle grid */}
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(rgba(56,189,248,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(56,189,248,0.15) 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}
+        />
+
+        {/* 3D points */}
+        <Canvas camera={{ position: [0, 0, 1.2], fov: 46 }}>
+          <ambientLight intensity={0.7} />
+          <ParcelPointField />
+        </Canvas>
+
+        {/* Central Parcel Wireframe Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <motion.div
+            className="relative w-44 h-44 rounded-xl border border-cyan-400/40 bg-cyan-500/[0.04] backdrop-blur-[1px] flex items-center justify-center"
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            {/* Corner brackets */}
+            <div className="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-300" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-cyan-300" />
+            <div className="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-cyan-300" />
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-300" />
+
+            {/* Inner crosshair info */}
+            <div className="text-center font-mono p-3 bg-slate-950/80 rounded-lg border border-cyan-500/30">
+              <div className="text-[10px] text-cyan-300 font-semibold tracking-wider">PARCEL #427</div>
+              <div className="text-xs text-white font-bold mt-0.5">2.40 ACRES</div>
+              <div className="text-[9px] text-emerald-400 mt-1 flex items-center justify-center gap-1">
+                <CheckCircle2 className="w-2.5 h-2.5" /> VERIFIED BOUNDARY
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Floating spatial badges */}
+        <motion.div
+          className="absolute top-4 left-4 bg-slate-900/90 border border-slate-700/60 px-2.5 py-1.5 rounded-lg text-[10px] font-mono text-slate-300 backdrop-blur-md shadow-lg"
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <span className="text-slate-400">Zone:</span> <span className="text-cyan-300 font-semibold">Residential R-2</span>
+        </motion.div>
+
+        <motion.div
+          className="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-700/60 px-2.5 py-1.5 rounded-lg text-[10px] font-mono text-slate-300 backdrop-blur-md shadow-lg"
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <span className="text-slate-400">Khasra:</span> <span className="text-emerald-300 font-semibold">142/1 &amp; 142/2</span>
+        </motion.div>
+      </div>
+
+      {/* Layer selector bar */}
+      <div className="p-3 border-t border-white/[0.08] bg-slate-950/95 flex items-center justify-between gap-2 overflow-x-auto">
+        <span className="text-[11px] font-mono text-slate-400 uppercase tracking-wider pl-1 hidden sm:inline">
+          Active Layers:
+        </span>
+        <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
+          {[
+            { id: 'all', label: 'Composite' },
+            { id: 'ror', label: 'RoR Data' },
+            { id: 'zoning', label: 'Zoning' },
+            { id: 'satellite', label: 'Satellite' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveLayer(tab.id as any)}
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                activeLayer === tab.id
+                  ? 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/40 shadow-sm'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] border border-transparent'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 export default function LandingPage() {
-  const [active, setActive] = useState(0);
+  const [selectedSource, setSelectedSource] = useState(0);
 
   return (
-    <main className="landing-page-wrapper min-h-screen overflow-hidden bg-[#07111f] text-slate-100">
-      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[.07] bg-[#07111f]/75 backdrop-blur-xl">
-        <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-6 lg:px-12">
-          <Link href="/" className="group flex items-center gap-3"><span className="grid size-9 place-items-center border border-cyan-200/40 bg-cyan-300/10 font-mono text-xs font-semibold text-cyan-200 transition group-hover:bg-cyan-300/20">LL</span><span><span className="block font-heading text-sm font-semibold tracking-[.16em] text-white">LANDLENS</span><span className="block font-mono text-[8px] uppercase tracking-[.2em] text-slate-500">Geospatial intelligence</span></span></Link>
-          <div className="hidden items-center gap-8 text-[11px] uppercase tracking-[.16em] text-slate-400 md:flex"><Link href="/map" className="transition hover:text-cyan-200">Map</Link><Link href="/parcels/P-00427" className="transition hover:text-cyan-200">Parcels</Link><Link href="/technical-architecture" className="transition hover:text-cyan-200">Architecture</Link><Link href="/analytics" className="transition hover:text-cyan-200">Analytics</Link></div>
-          <Link href="/login" className="group flex items-center gap-2 border border-cyan-200/40 px-4 py-2 text-[10px] font-semibold uppercase tracking-[.14em] text-cyan-100 transition hover:bg-cyan-300 hover:text-[#07111f]">Enter platform <ArrowUpRight className="size-3 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></Link>
+    <main className="landing-page-wrapper min-h-screen bg-[#060d19] text-slate-100 selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* ── Minimalist Navbar ── */}
+      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-[#060d19]/80 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
+          <Link href="/" className="group flex items-center gap-3">
+            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-indigo-600 text-slate-950 font-bold text-xs shadow-md shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+              LL
+            </div>
+            <div>
+              <span className="font-bold text-sm tracking-tight text-white group-hover:text-cyan-200 transition-colors">
+                LandLens
+              </span>
+              <span className="hidden sm:inline-block ml-2 text-[10px] font-mono text-cyan-400/80 uppercase tracking-widest bg-cyan-950/70 border border-cyan-800/40 px-1.5 py-0.5 rounded">
+                DPI GIS
+              </span>
+            </div>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-7 text-xs font-medium text-slate-300">
+            <Link href="/map" className="hover:text-cyan-300 transition-colors">Live Map</Link>
+            <Link href="/parcels/P-00427" className="hover:text-cyan-300 transition-colors">Parcel Registry</Link>
+            <Link href="/technical-architecture" className="hover:text-cyan-300 transition-colors">Architecture</Link>
+            <Link href="/analytics" className="hover:text-cyan-300 transition-colors">District Analytics</Link>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white text-[#060d19] hover:bg-slate-100 hover:shadow-lg hover:shadow-white/20 transition-all"
+            >
+              <span className="text-[#060d19]">Platform Login</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-[#060d19]" />
+            </Link>
+          </div>
         </div>
       </nav>
 
-      <motion.section className="relative min-h-screen border-b border-white/[.07] px-6 pb-20 pt-40 lg:px-12 lg:pt-32">
-        <div className="absolute inset-0 parcel-grid-bg opacity-20" /><div className="absolute inset-0 bg-[radial-gradient(ellipse_at_75%_45%,rgba(34,211,238,.11),transparent_35%)]" />
-        <div className="relative mx-auto grid min-h-[calc(100vh-152px)] max-w-[1440px] items-center gap-14 lg:grid-cols-[.84fr_1.16fr]">
-          <div className="max-w-xl"><div className="mb-8 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[.28em] text-emerald-300"><span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_12px_#34d399]" /> GIS intelligence platform · India</div><h1 className="font-heading text-[clamp(4rem,8vw,8.5rem)] font-semibold leading-[.82] tracking-[-.08em] text-white">LAND<br /><span className="text-cyan-200">LENS</span><span className="text-cyan-300/30">.</span></h1><p className="mt-10 max-w-md text-lg leading-relaxed text-slate-400">See the land. <span className="text-slate-100">Understand the data.</span> Connect fragmented records, planning, registration and spatial intelligence around every parcel.</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/login" className="group flex items-center gap-3 bg-cyan-300 px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#07111f] transition hover:bg-white">Explore LandLens <ArrowUpRight className="size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/map" className="flex items-center gap-3 border border-white/15 px-5 py-3 text-xs font-semibold uppercase tracking-[.12em] text-slate-200 transition hover:border-cyan-200/60 hover:text-cyan-200"><Play className="size-3 fill-current" /> View GIS demo</Link></div><div className="mt-16 grid max-w-md grid-cols-3 border-t border-white/10 pt-5">{metrics.map(([value, label]) => <div key={label}><div className="font-heading text-2xl text-white">{value}</div><div className="mt-1 font-mono text-[9px] uppercase tracking-[.12em] text-slate-500">{label}</div></div>)}</div></div>
-          <ParcelDiagram />
+      {/* ── Hero Section ── */}
+      <section className="relative pt-32 pb-20 lg:pt-36 lg:pb-28 overflow-hidden border-b border-white/[0.08]">
+        {/* Ambient Radial Lights */}
+        <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/3 right-1/4 w-[450px] h-[450px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Column: Headline & Value Prop */}
+            <div className="lg:col-span-6 xl:col-span-7 space-y-6">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-400/25 bg-cyan-950/40 text-cyan-300 font-mono text-[11px] tracking-wide backdrop-blur-md"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span>INTELLIGENCE LAYER FOR INDIA&apos;S LAND STACK</span>
+              </motion.div>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]"
+              >
+                One Parcel.{' '}
+                <span className="bg-gradient-to-r from-cyan-300 via-teal-200 to-indigo-300 bg-clip-text text-transparent">
+                  Every Point of Truth.
+                </span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-base sm:text-lg text-slate-300/90 leading-relaxed max-w-xl"
+              >
+                Connect fragmented cadastral maps, Record of Rights (RoR), deed registrations,
+                and master plans into a single verified evidence graph powered by ULPIN.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="flex flex-wrap items-center gap-3.5 pt-2"
+              >
+                <Link
+                  href="/login"
+                  className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-xl font-semibold text-xs tracking-wider uppercase bg-gradient-to-r from-cyan-400 to-teal-400 text-slate-950 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/35 hover:-translate-y-0.5 transition-all"
+                >
+                  <span>Launch Platform</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+
+                <Link
+                  href="/map"
+                  className="inline-flex items-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-xs tracking-wider uppercase border border-white/15 bg-white/5 backdrop-blur-md text-slate-200 hover:bg-white/10 hover:border-white/30 transition-all"
+                >
+                  <Play className="w-3.5 h-3.5 fill-current text-cyan-400" />
+                  <span>Interactive GIS Demo</span>
+                </Link>
+              </motion.div>
+
+              {/* Metrics bar */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="pt-8 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-4 gap-6"
+              >
+                {metrics.map((m) => (
+                  <div key={m.label}>
+                    <div className="text-2xl font-bold font-mono tracking-tight text-white">
+                      {m.value}
+                    </div>
+                    <div className="text-xs font-medium text-slate-300 mt-0.5">{m.label}</div>
+                    <div className="text-[10px] text-slate-500 mt-0.5">{m.sub}</div>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Right Column: Interactive 3D Parcel Console */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="lg:col-span-6 xl:col-span-5"
+            >
+              <ParcelConsole />
+            </motion.div>
+          </div>
         </div>
-        <div className="absolute bottom-7 left-6 flex items-center gap-3 font-mono text-[9px] uppercase tracking-[.2em] text-slate-600 lg:left-12"><ScanLine className="size-3 text-cyan-300" /> Scroll to inspect the intelligence layer <ChevronRight className="size-3" /></div>
-      </motion.section>
+      </section>
 
-      <section className="border-b border-white/[.07] bg-[#0b1728] px-6 py-24 lg:px-12"><div className="mx-auto max-w-[1440px]"><div className="grid gap-14 lg:grid-cols-[.72fr_1.28fr]"><div><div className="eyebrow text-cyan-300">01 / Fragmented → connected</div><h2 className="mt-5 max-w-md font-heading text-4xl font-semibold leading-tight tracking-[-.04em] text-white">One parcel.<br /><span className="text-slate-500">Every point of truth.</span></h2><p className="mt-6 max-w-sm leading-relaxed text-slate-400">LandLens creates a living evidence graph around the parcel — so every decision starts with context, not a disconnected document.</p><Link href="/map" className="mt-8 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.15em] text-cyan-200">Open live map <ArrowUpRight className="size-4" /></Link></div><div className="relative grid gap-px border border-white/10 bg-white/10 sm:grid-cols-2 lg:grid-cols-3">{sources.map((source, i) => <button key={source} onClick={() => setActive(i)} className={`group min-h-36 bg-[#0b1728] p-6 text-left transition hover:bg-[#112238] ${active === i ? 'bg-[#112238]' : ''}`}><div className="mb-10 flex items-center justify-between"><span className="font-mono text-[10px] text-slate-600">0{i + 1}</span><Database className={`size-4 ${active === i ? 'text-cyan-200' : 'text-slate-600'}`} /></div><div className="text-sm font-medium text-slate-200">{source}</div><div className="mt-2 flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.1em] text-emerald-300/70"><span className="size-1 rounded-full bg-emerald-300" /> connected</div></button>)}</div></div></div></section>
+      {/* ── Feature Section 1: Connected Evidence Graph ── */}
+      <section className="py-24 border-b border-white/[0.08] bg-[#081324]">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-cyan-400">
+              01 / Architecture
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+              Connected Evidence Graph
+            </h2>
+            <p className="text-slate-400 text-base mt-3 leading-relaxed">
+              Every parcel functions as an index across disparate government databases.
+              Instead of hunting through siloed portals, officers and citizens see one unified spatial story.
+            </p>
+          </div>
 
-      <section className="relative px-6 py-28 lg:px-12"><div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_20%,rgba(23,37,84,.7),transparent_60%)]" /><div className="relative mx-auto grid max-w-[1440px] items-center gap-16 lg:grid-cols-[1.1fr_.9fr]"><div className="relative border border-white/10 bg-[#0b1728] p-6 shadow-2xl lg:p-10"><div className="mb-8 flex items-start justify-between"><div><div className="eyebrow text-amber-300">02 / Land Truth Engine</div><h2 className="mt-4 font-heading text-3xl font-semibold tracking-[-.04em] text-white">When records disagree,<br /><span className="text-slate-500">evidence takes over.</span></h2></div><Waypoints className="size-7 text-cyan-300" /></div><div className="border border-rose-300/20 bg-rose-300/[.04] p-5"><div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[.15em] text-rose-300"><span className="size-2 rounded-full bg-rose-300" /> Conflict detected · area mismatch</div><div className="mt-6 grid grid-cols-3 gap-4 text-sm"><div><div className="font-mono text-[10px] text-slate-500">RoR</div><div className="mt-2 text-xl text-white">2.40 <small className="text-xs text-slate-500">acres</small></div></div><div><div className="font-mono text-[10px] text-slate-500">Registration</div><div className="mt-2 text-xl text-white">2.10 <small className="text-xs text-slate-500">acres</small></div></div><div><div className="font-mono text-[10px] text-slate-500">Difference</div><div className="mt-2 text-xl text-amber-300">{"0.30 "}<span className="text-xs text-slate-500">acres</span></div></div></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2"><div className="border border-white/10 p-4"><div className="eyebrow text-cyan-200">Evidence</div><div className="mt-3 text-sm text-slate-300">2 source records require review</div></div><div className="border border-white/10 p-4"><div className="eyebrow text-emerald-300">Recommended action</div><div className="mt-3 text-sm text-slate-300">Initiate field verification</div></div></div></div><div><div className="eyebrow text-emerald-300">03 / Explainable intelligence</div><h2 className="mt-5 font-heading text-4xl font-semibold leading-tight tracking-[-.04em] text-white">From alert<br />to <span className="text-cyan-200">action.</span></h2><p className="mt-6 max-w-md leading-relaxed text-slate-400">Every conflict becomes a clear next step. LandLens gives officers, planners and citizens the evidence to move with confidence.</p><div className="mt-9 flex flex-col gap-4 border-l border-cyan-300/30 pl-5 text-sm text-slate-300"><div className="flex items-center gap-3"><ShieldCheck className="size-4 text-emerald-300" /> Traceable source evidence</div><div className="flex items-center gap-3"><GitMerge className="size-4 text-cyan-300" /> Cross-system comparison</div><div className="flex items-center gap-3"><FileCheck2 className="size-4 text-amber-300" /> Auditable workflow output</div></div></div></div></section>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12">
+            {sources.map((s, i) => (
+              <motion.div
+                key={s.name}
+                whileHover={{ y: -3, borderColor: 'rgba(56, 189, 248, 0.4)' }}
+                onClick={() => setSelectedSource(i)}
+                className={`cursor-pointer rounded-xl border p-5 transition-all ${
+                  selectedSource === i
+                    ? 'border-cyan-500/50 bg-cyan-950/20 shadow-lg shadow-cyan-950/50'
+                    : 'border-white/[0.08] bg-slate-900/60 hover:bg-slate-900/90'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="p-2 rounded-lg bg-white/[0.05] text-cyan-400 border border-white/[0.05]">
+                    <Database className="w-4 h-4" />
+                  </div>
+                  <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    {s.status}
+                  </span>
+                </div>
 
-      <section className="border-t border-white/[.07] bg-[#f7f9fc] px-6 py-24 text-[#07111f] lg:px-12"><div className="mx-auto grid max-w-[1440px] items-end gap-12 lg:grid-cols-[1fr_1fr]"><div><div className="eyebrow text-[#087f8c]">Built for the land stack</div><h2 className="mt-5 max-w-lg font-heading text-4xl font-semibold leading-tight tracking-[-.04em]">A calmer way to navigate complexity.</h2></div><div className="grid gap-3 sm:grid-cols-2"><Link href="/citizen" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Map className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For citizens</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Find your land, understand restrictions and request service without the maze.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link><Link href="/dashboard" className="group border border-[#07111f]/10 p-5 transition hover:border-[#087f8c]/50 hover:bg-white"><Layers3 className="size-5 text-[#087f8c]" /><div className="mt-10 text-sm font-semibold">For institutions</div><p className="mt-2 text-xs leading-relaxed text-slate-500">Govern parcels, conflicts and workflows from one operational view.</p><ArrowUpRight className="mt-5 size-4 transition group-hover:translate-x-1 group-hover:-translate-y-1" /></Link></div></div></section>
+                <div className="mt-4">
+                  <div className="text-sm font-semibold text-white">{s.name}</div>
+                  <div className="font-mono text-[11px] text-slate-400 mt-0.5">{s.code}</div>
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">{s.desc}</p>
+                </div>
 
-      <footer className="border-t border-white/[.07] bg-[#07111f] px-6 py-10 lg:px-12"><div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-5 sm:flex-row sm:items-center"><div className="font-mono text-[10px] uppercase tracking-[.2em] text-slate-600">LANDLENS / INTELLIGENCE LAYER FOR INDIA'S LAND STACK</div><div className="flex items-center gap-6 font-mono text-[10px] uppercase tracking-[.15em] text-slate-500"><Link href="/technical-architecture" className="hover:text-cyan-200">Architecture</Link><Link href="/login" className="hover:text-cyan-200">Platform login</Link><Sparkles className="size-3 text-cyan-300" /></div></div></footer>
+                <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-xs">
+                  <span className="font-mono text-slate-500">Volume: {s.records}</span>
+                  <span className="text-cyan-400 font-medium text-[11px] flex items-center gap-1">
+                    Explore <ChevronRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature Section 2: Land Truth Engine & Conflict Resolution ── */}
+      <section className="py-24 border-b border-white/[0.08] relative">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="grid lg:grid-cols-12 gap-12 items-center">
+            {/* Left: Conflict card simulation */}
+            <div className="lg:col-span-7">
+              <div className="rounded-2xl border border-rose-500/25 bg-slate-950/90 p-6 sm:p-8 shadow-2xl backdrop-blur-xl">
+                <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-lg bg-rose-500/10 text-rose-400 border border-rose-500/20">
+                      <Waypoints className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">Discrepancy Engine Alert</div>
+                      <div className="font-mono text-[11px] text-slate-400">Parcel ULPIN: CG-RPR-492001-00104</div>
+                    </div>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-xs font-mono font-semibold bg-rose-950/80 text-rose-300 border border-rose-800/60">
+                    High Severity
+                  </span>
+                </div>
+
+                {/* Evidence comparison grid */}
+                <div className="grid sm:grid-cols-3 gap-3 my-6">
+                  <div className="p-4 rounded-xl bg-slate-900/80 border border-white/[0.06]">
+                    <div className="text-[11px] font-mono text-slate-400">Record of Rights (RoR)</div>
+                    <div className="text-xl font-bold text-white mt-1">2.40 <span className="text-xs text-slate-400 font-normal">acres</span></div>
+                    <div className="text-[10px] text-slate-500 mt-1">B-1 Khasra Entry 2023</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-900/80 border border-white/[0.06]">
+                    <div className="text-[11px] font-mono text-slate-400">Registered Deed</div>
+                    <div className="text-xl font-bold text-white mt-1">2.10 <span className="text-xs text-slate-400 font-normal">acres</span></div>
+                    <div className="text-[10px] text-slate-500 mt-1">Sale Deed #8914/2021</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-amber-950/30 border border-amber-500/30">
+                    <div className="text-[11px] font-mono text-amber-300">Variance Detected</div>
+                    <div className="text-xl font-bold text-amber-200 mt-1">0.30 <span className="text-xs text-amber-300/80 font-normal">acres</span></div>
+                    <div className="text-[10px] text-amber-300/70 mt-1">Field survey required</div>
+                  </div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between gap-4">
+                  <div className="text-xs text-slate-300">
+                    <strong className="text-white">Prescribed Action:</strong> Auto-dispatch task to Circle Officer for physical DGPS boundary survey.
+                  </div>
+                  <Link
+                    href="/alerts"
+                    className="flex-shrink-0 px-4 py-2 rounded-lg text-xs font-semibold bg-cyan-400 text-slate-950 hover:bg-cyan-300 transition-colors"
+                  >
+                    Open Workflow
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Narrative */}
+            <div className="lg:col-span-5 space-y-5">
+              <div className="text-xs font-mono font-semibold uppercase tracking-widest text-cyan-400">
+                02 / Automated Governance
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight">
+                When Records Disagree, Spatial Evidence Resolves.
+              </h2>
+              <p className="text-slate-400 text-base leading-relaxed">
+                Land disputes usually fester in the gap between the Sub-Registrar&apos;s deed and the Revenue Tehsildar&apos;s record. LandLens instantly cross-validates records against spatial ground truths.
+              </p>
+
+              <div className="space-y-3 pt-2 text-sm text-slate-300">
+                <div className="flex items-center gap-3">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <span>Immutable audit trails linked to departmental source APIs</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <GitMerge className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                  <span>Automated multi-jurisdictional conflict flags</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <FileCheck2 className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                  <span>Actionable workflows with statutory SLA tracking</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Feature Section 3: Built for Every Stakeholder ── */}
+      <section className="py-24 border-b border-white/[0.08] bg-[#07111f]">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="text-xs font-mono font-semibold uppercase tracking-widest text-cyan-400">
+              03 / Persona Experience
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-white mt-2">
+              Built for the Entire Land Ecosystem
+            </h2>
+            <p className="text-slate-400 text-sm mt-3">
+              One platform with tailored operational interfaces for each stakeholder.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-14">
+            {[
+              {
+                role: 'Citizen',
+                href: '/citizen',
+                icon: <Users className="w-5 h-5 text-emerald-400" />,
+                title: 'Citizen Portal',
+                desc: 'Instant parcel checks, "Can I build here?" analysis, and service request tracking without middlemen.',
+              },
+              {
+                role: 'Revenue Officer',
+                href: '/revenue',
+                icon: <FileText className="w-5 h-5 text-amber-400" />,
+                title: 'Revenue & RoR',
+                desc: 'Mutation reviews, ownership lineage, encumbrance flags, and field survey dispatching.',
+              },
+              {
+                role: 'Urban Planner',
+                href: '/planning',
+                icon: <Layers className="w-5 h-5 text-cyan-400" />,
+                title: 'Planning & Zoning',
+                desc: 'Master plan alignment, road reservation overlays, and environmental restriction checks.',
+              },
+              {
+                role: 'Administrator',
+                href: '/dashboard',
+                icon: <Activity className="w-5 h-5 text-indigo-400" />,
+                title: 'District Command',
+                desc: 'Executive analytics, conflict density heatmaps, departmental SLAs, and escalation queues.',
+              },
+            ].map((card) => (
+              <Link
+                key={card.role}
+                href={card.href}
+                className="group rounded-2xl border border-white/[0.08] bg-slate-900/50 p-6 hover:bg-slate-900/90 hover:border-cyan-400/40 hover:-translate-y-1 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <div className="p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.06] inline-block mb-4">
+                    {card.icon}
+                  </div>
+                  <h3 className="text-base font-semibold text-white group-hover:text-cyan-300 transition-colors">
+                    {card.title}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    {card.desc}
+                  </p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs text-cyan-400 font-semibold">
+                  <span>Enter view</span>
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="py-10 bg-[#060d19] text-xs text-slate-500">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-300">LandLens</span>
+            <span>·</span>
+            <span>Digital Public Infrastructure for Land Intelligence</span>
+          </div>
+          <div className="flex items-center gap-6 font-mono text-[11px]">
+            <Link href="/map" className="hover:text-cyan-300 transition-colors">GIS Map</Link>
+            <Link href="/technical-architecture" className="hover:text-cyan-300 transition-colors">Architecture</Link>
+            <Link href="/login" className="hover:text-cyan-300 transition-colors">Demo Login</Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

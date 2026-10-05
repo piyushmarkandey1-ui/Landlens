@@ -124,6 +124,9 @@ export default function MapView({ selectedParcelId, onParcelSelect, height = '10
     const initMap = async () => {
       try {
         const maplibregl = await import('maplibre-gl');
+        if (typeof window !== 'undefined' && 'setWorkerUrl' in maplibregl) {
+          (maplibregl as any).setWorkerUrl('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl-csp-worker.js');
+        }
 
         const map = new maplibregl.Map({
           container: mapRef.current!,
