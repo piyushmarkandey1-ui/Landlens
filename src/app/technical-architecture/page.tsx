@@ -7,7 +7,7 @@ import {
   ArrowLeft, ArrowRight, Database, Layers, Cpu, Globe, Shield, Brain,
   Map, ChevronDown, ChevronRight, Code2, Server, Lock, Users,
   GitBranch, Zap, CheckCircle2, AlertTriangle, ExternalLink, Copy,
-  FileCode, Terminal, Box, Network, BarChart3, Satellite
+  Terminal, Box, Network
 } from 'lucide-react';
 import { NORMALIZATION_EXAMPLES, SCALABILITY_PLAN, ENHANCED_DATA_SOURCES } from '@/lib/adapters';
 
@@ -309,7 +309,7 @@ export default function TechnicalArchitecturePage() {
           <div className="text-xs font-mono text-violet-400 uppercase tracking-wider mb-3">Engineering Documentation v2.0</div>
           <h1 className="font-heading font-bold text-4xl text-white mb-4">LandLens Interoperability Architecture</h1>
           <p className="text-slate-400 max-w-3xl mx-auto leading-relaxed">
-            A layered adapter architecture that normalizes India's fragmented land administration systems —
+            A layered adapter architecture that normalizes India&apos;s fragmented land administration systems —
             different states, schemas, terminology, units, and workflows — into one canonical parcel-centric model anchored on ULPIN.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mt-6">

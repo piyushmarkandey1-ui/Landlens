@@ -3,8 +3,8 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { 
-  ArrowRight, Map, Search, CheckCircle2, Shield, GitMerge,
-  Brain, Activity, Users, Building2, Database, Lock, Eye
+  ArrowRight, Map, CheckCircle2, Shield, GitMerge,
+  Brain, Activity, Users, Building2, Database, Lock
 } from 'lucide-react';
 
 const FEATURES = [
@@ -279,7 +279,7 @@ export default function PremiumLandingPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-heading font-bold text-4xl lg:text-5xl mb-6">
-              Don't Just Store the Data.<br />Understand It.
+              Don&apos;t Just Store the Data.<br />Understand It.
             </h2>
             <p className="text-xl text-slate-300 max-w-3xl mx-auto">
               LandLens compares information from multiple sources to identify where records agree, where they differ and where human verification may be required.

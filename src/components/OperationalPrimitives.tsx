@@ -54,5 +54,5 @@ export function ProgressBar({ value, color = '#2563eb' }: { value: number; color
 }
 
 export function DetailLink({ href, children }: { href: string; children: ReactNode }) {
-  return <Link href={href} className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1">{children}<ChevronRight size={11} /></Link>;
+  return <Link href={href} className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">{children}<ChevronRight size={11} /></Link>;
 }

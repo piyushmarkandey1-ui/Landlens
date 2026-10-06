@@ -5,9 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import AppShell from '@/components/AppShell';
 import { PARCELS, CONFLICT_ALERTS } from '@/lib/data';
-import { Search, Map, ArrowRight, Filter } from 'lucide-react';
+import { Search, Map as MapIcon, ArrowRight, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
-import type { Parcel } from '@/lib/types';
 
 export default function OfficerPage() {
   const { isAuthenticated } = useAuth();
@@ -31,18 +30,44 @@ export default function OfficerPage() {
 
   return (
     <AppShell>
-      <div className="p-6 max-w-6xl mx-auto">
-        <div className="mb-6">
-          <h1 className="font-heading font-bold text-2xl text-white mb-1">Parcel Search</h1>
-          <p className="text-sm text-slate-500">Search and access parcel records, RoR, and intelligence across Raipur district.</p>
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-blue-50 text-blue-700 border border-blue-200/80 mb-2">
+              <Search size={11} /> Unified Land Cadastre
+            </div>
+            <h1 className="font-heading font-bold text-2xl lg:text-3xl text-slate-900 tracking-tight">
+              Parcel Search & Registry
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+              Query and inspect parcel records, Record of Rights (RoR), and spatial conflict flags across Raipur district.
+            </p>
+          </div>
+          <Link
+            href="/map"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200 px-4 py-2.5 rounded-xl transition-all shadow-2xs self-start sm:self-auto"
+          >
+            <MapIcon size={14} /> Open GIS Workspace
+          </Link>
         </div>
 
-        <div className="flex gap-3 mb-5 flex-wrap">
+        {/* Filter Controls */}
+        <div className="flex gap-3 flex-wrap">
           <div className="relative flex-1 min-w-64">
-            <Search size={15} className="absolute left-3 top-2.5 text-slate-500" />
-            <input value={query} onChange={e => setQuery(e.target.value)} placeholder="ULPIN, Khasra, Village, Address…" className="form-input pl-10" />
+            <Search size={15} className="absolute left-3.5 top-3 text-slate-400" />
+            <input
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search by ULPIN, Khasra, Village, or Address…"
+              className="w-full bg-white border border-slate-200 rounded-xl text-xs text-slate-900 pl-10 pr-4 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all shadow-xs placeholder:text-slate-400"
+            />
           </div>
-          <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)} className="form-input w-48">
+          <select
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+            className="bg-white border border-slate-200 rounded-xl text-xs text-slate-700 px-3.5 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all shadow-xs w-48 font-medium"
+          >
             <option value="all">All Statuses</option>
             <option value="Active">Active</option>
             <option value="Disputed">Disputed</option>
@@ -51,61 +76,88 @@ export default function OfficerPage() {
           </select>
         </div>
 
-        <div className="text-xs text-slate-500 mb-3">{results.length} parcels found</div>
+        <div className="text-xs font-medium text-slate-500">
+          Showing <span className="font-bold text-slate-900">{results.length}</span> parcel records
+        </div>
 
-        <div className="surface-card overflow-auto">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Parcel ID</th>
-                <th>ULPIN</th>
-                <th>Khasra</th>
-                <th>Village</th>
-                <th>Area (acres)</th>
-                <th>Land Use</th>
-                <th>Zone</th>
-                <th>Status</th>
-                <th>Alerts</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.slice(0, 40).map(parcel => {
-                const alertCount = CONFLICT_ALERTS.filter(a => a.parcelId === parcel.id && a.status !== 'Resolved').length;
-                const critCount = CONFLICT_ALERTS.filter(a => a.parcelId === parcel.id && a.severity === 'critical' && a.status !== 'Resolved').length;
-                return (
-                  <tr key={parcel.id}>
-                    <td className="font-mono text-xs font-bold text-indigo-300">{parcel.id}</td>
-                    <td className="font-mono text-[10px] text-slate-600">{parcel.ulpin}</td>
-                    <td className="font-mono text-xs">{parcel.khasraNo}</td>
-                    <td className="text-xs">{parcel.village}</td>
-                    <td className="font-mono text-xs">{parcel.areaAcres}</td>
-                    <td className="text-xs">{parcel.landUse}</td>
-                    <td><span className="chip text-[9px] bg-indigo-500/15 text-indigo-300">{parcel.zoning}</span></td>
-                    <td>
-                      <span className={`chip text-[9px] ${parcel.status === 'Active' ? 'bg-emerald-500/15 text-emerald-400' : parcel.status === 'Disputed' ? 'bg-red-500/15 text-red-400' : parcel.status === 'Restricted' ? 'bg-violet-500/15 text-violet-400' : 'bg-amber-500/15 text-amber-400'}`}>
-                        {parcel.status}
-                      </span>
-                    </td>
-                    <td>
-                      {alertCount > 0 ? (
-                        <span className={`chip text-[9px] ${critCount > 0 ? 'bg-red-500/15 text-red-400' : 'bg-orange-500/15 text-orange-400'}`}>
-                          ⚠ {alertCount}
+        {/* Records Table */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold text-[11px] uppercase tracking-wider">
+                  <th className="p-3.5">Parcel ID</th>
+                  <th className="p-3.5">ULPIN</th>
+                  <th className="p-3.5">Khasra</th>
+                  <th className="p-3.5">Village</th>
+                  <th className="p-3.5">Area (Acres)</th>
+                  <th className="p-3.5">Land Use</th>
+                  <th className="p-3.5">Zone</th>
+                  <th className="p-3.5">Status</th>
+                  <th className="p-3.5">Conflicts</th>
+                  <th className="p-3.5 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {results.slice(0, 40).map(parcel => {
+                  const alertCount = CONFLICT_ALERTS.filter(a => a.parcelId === parcel.id && a.status !== 'Resolved').length;
+                  const critCount = CONFLICT_ALERTS.filter(a => a.parcelId === parcel.id && a.severity === 'critical' && a.status !== 'Resolved').length;
+                  
+                  return (
+                    <tr key={parcel.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="p-3.5 font-mono font-bold text-blue-700">{parcel.id}</td>
+                      <td className="p-3.5 font-mono text-[11px] text-slate-600">{parcel.ulpin}</td>
+                      <td className="p-3.5 font-mono text-slate-800">{parcel.khasraNo}</td>
+                      <td className="p-3.5 text-slate-700">{parcel.village}</td>
+                      <td className="p-3.5 font-mono text-slate-800">{parcel.areaAcres}</td>
+                      <td className="p-3.5 text-slate-600">{parcel.landUse}</td>
+                      <td className="p-3.5">
+                        <span className="chip text-[10px] font-medium bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md">
+                          {parcel.zoning}
                         </span>
-                      ) : <span className="text-slate-700 text-xs">—</span>}
-                    </td>
-                    <td>
-                      <Link href={`/parcels/${parcel.id}`} className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors">
-                        Parcel 360 <ArrowRight size={10} />
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="p-3.5">
+                        <span className={`chip text-[10px] font-medium px-2 py-0.5 rounded-md border ${
+                          parcel.status === 'Active'
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                            : parcel.status === 'Disputed'
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
+                            : parcel.status === 'Restricted'
+                            ? 'bg-purple-50 text-purple-700 border-purple-200'
+                            : 'bg-amber-50 text-amber-800 border-amber-200'
+                        }`}>
+                          {parcel.status}
+                        </span>
+                      </td>
+                      <td className="p-3.5">
+                        {alertCount > 0 ? (
+                          <span className={`chip text-[10px] font-semibold px-2 py-0.5 rounded-md border inline-flex items-center gap-1 ${
+                            critCount > 0
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
+                          }`}>
+                            <ShieldAlert size={11} /> {alertCount}
+                          </span>
+                        ) : (
+                          <span className="text-slate-400 text-xs">—</span>
+                        )}
+                      </td>
+                      <td className="p-3.5 text-right">
+                        <Link
+                          href={`/parcels/${parcel.id}`}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                        >
+                          Parcel 360 <ArrowRight size={11} />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
           {results.length > 40 && (
-            <div className="px-4 py-2 text-xs text-slate-600 border-t border-slate-800/50">
+            <div className="px-4 py-3 text-xs text-slate-500 bg-slate-50 border-t border-slate-200">
               Showing 40 of {results.length} results. Refine search to narrow down.
             </div>
           )}

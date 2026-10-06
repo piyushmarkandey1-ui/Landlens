@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { Search, X, MapPin, AlertTriangle, ChevronRight, FileText, CheckCircle2, Shield, Satellite } from 'lucide-react';
-import { PARCELS, CONFLICT_ALERTS } from '@/lib/data';
+import { PARCELS, CONFLICT_ALERTS, SATELLITE_CHANGES } from '@/lib/data';
 import type { Parcel, ConflictAlert } from '@/lib/types';
-import type { MapGeoJSONFeature, MapMouseEvent, Popup } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import type { Map as MapLibreMap, MapGeoJSONFeature, MapMouseEvent, Popup } from 'maplibre-gl';
 import { parcelTruthEngine } from '@/lib/intelligence';
 import Link from 'next/link';
 
@@ -59,8 +60,7 @@ const LAYER_GROUPS: LayerGroup[] = [
 
 export default function MapView({ selectedParcelId, onParcelSelect, height = '100%' }: MapViewProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mapInstance = useRef<any>(null);
+  const mapInstance = useRef<MapLibreMap | null>(null);
   const tooltipRef = useRef<Popup | null>(null);
   
   const [search, setSearch] = useState('');
@@ -124,8 +124,10 @@ export default function MapView({ selectedParcelId, onParcelSelect, height = '10
     const initMap = async () => {
       try {
         const maplibregl = await import('maplibre-gl');
-        if (typeof window !== 'undefined' && 'setWorkerUrl' in maplibregl) {
-          (maplibregl as any).setWorkerUrl('https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl-csp-worker.js');
+        
+        // Self-hosted worker bundled in public/maplibre to prevent Turbopack/Next.js worker resolution errors
+        if (typeof window !== 'undefined') {
+          maplibregl.setWorkerUrl('/maplibre/maplibre-gl-worker.mjs');
         }
 
         const map = new maplibregl.Map({
@@ -135,13 +137,18 @@ export default function MapView({ selectedParcelId, onParcelSelect, height = '10
             sources: {
               'osm-tiles': {
                 type: 'raster',
-                tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+                tiles: [
+                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
+                ],
                 tileSize: 256,
                 attribution: '© OpenStreetMap contributors'
               },
               'satellite-tiles': {
                 type: 'raster',
-                tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                tiles: [
+                  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+                  'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+                ],
                 tileSize: 256,
                 attribution: 'Tiles © Esri'
               },
@@ -266,9 +273,10 @@ export default function MapView({ selectedParcelId, onParcelSelect, height = '10
   // Update selected feature state
   useEffect(() => {
     if (mapInstance.current && isLoaded) {
+      const map = mapInstance.current;
       parcelsGeoJSON.features.forEach(f => {
         const isSelected = selectedParcel?.id === f.properties.pid;
-        mapInstance.current.setFeatureState({ source: 'parcels', id: f.id }, { selected: isSelected });
+        map.setFeatureState({ source: 'parcels', id: f.id }, { selected: isSelected });
       });
     }
   }, [selectedParcel, isLoaded, parcelsGeoJSON.features]);
@@ -568,37 +576,77 @@ export default function MapView({ selectedParcelId, onParcelSelect, height = '10
               </div>
             )}
 
-            {panelTab === 'satellite' && (
-              <div className="animate-in fade-in duration-300 space-y-4">
-                <div className="bg-cyan-500/10 border border-cyan-500/20 p-3 rounded-xl flex items-start gap-3">
-                  <Satellite size={16} className="text-cyan-400 mt-0.5" />
-                  <div>
-                    <div className="text-xs font-semibold text-cyan-300 mb-1">AI Change Detection</div>
-                    <div className="text-[11px] text-cyan-300/70">Demonstration AI/ML result — field verification required.</div>
-                  </div>
-                </div>
-                
-                <div className="aspect-video bg-slate-800 rounded-xl border border-slate-700 relative overflow-hidden flex items-center justify-center">
-                  {/* Fake Image slider simulation */}
-                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517783999520-f068d3431a47?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center opacity-40 grayscale" />
-                  <div className="absolute inset-y-0 right-0 w-1/2 bg-[url('https://images.unsplash.com/photo-1517783999520-f068d3431a47?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80')] bg-cover bg-center border-l-2 border-cyan-400">
-                    <div className="absolute top-1/2 -left-[11px] w-5 h-5 bg-cyan-400 rounded-full flex items-center justify-center shadow-lg transform -translate-y-1/2">
-                      <div className="w-1 h-3 bg-slate-900 rounded-full" />
+            {panelTab === 'satellite' && (() => {
+              const parcelChanges = SATELLITE_CHANGES.filter(s => s.parcelId === selectedParcel.id);
+              const change = parcelChanges[0];
+              return (
+                <div className="animate-in fade-in duration-300 space-y-4">
+                  <div className="bg-cyan-500/10 border border-cyan-500/20 p-3 rounded-xl flex items-start gap-3">
+                    <Satellite size={16} className="text-cyan-400 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-semibold text-cyan-300 mb-1">ISRO Bhuvan / Cartosat-3 AI Screening</div>
+                      <div className="text-[11px] text-cyan-300/70">
+                        {parcelChanges.length > 0
+                          ? `${parcelChanges.length} temporal difference(s) detected across baseline orthophotos.`
+                          : 'No structural changes detected against baseline cadastre.'}
+                      </div>
                     </div>
                   </div>
-                  <div className="absolute top-2 left-2 bg-slate-950/80 px-2 py-1 rounded text-[10px] text-white">Before: Jan 2025</div>
-                  <div className="absolute top-2 right-2 bg-slate-950/80 px-2 py-1 rounded text-[10px] text-white">After: Jun 2026</div>
+                  
+                  <div className="aspect-video bg-slate-900 rounded-xl border border-slate-800 relative overflow-hidden flex items-center justify-center p-3">
+                    {/* Geospatial Orthophoto Simulation */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/40 via-slate-900 to-amber-950/30" />
+                    <div className="absolute inset-0 parcel-grid-bg opacity-30" />
+                    
+                    {/* Simulated Parcel Outline */}
+                    <div className="relative z-10 w-36 h-28 border-2 border-cyan-400/80 rounded-lg bg-cyan-500/10 flex flex-col items-center justify-center p-2 text-center shadow-lg">
+                      <div className="text-[10px] font-mono text-cyan-300 font-bold">{selectedParcel.id}</div>
+                      <div className="text-[9px] text-slate-300 mt-0.5">{selectedParcel.areaAcres} Acres</div>
+                      <div className="mt-1 px-1.5 py-0.5 rounded bg-cyan-950/80 border border-cyan-400/40 text-[9px] font-semibold text-cyan-200">
+                        {change ? change.changeType : 'No Change'}
+                      </div>
+                    </div>
+
+                    <div className="absolute top-2 left-2 bg-slate-950/90 border border-slate-800 px-2 py-0.5 rounded text-[10px] text-slate-300">
+                      Baseline: 2024
+                    </div>
+                    <div className="absolute top-2 right-2 bg-slate-950/90 border border-cyan-500/30 px-2 py-0.5 rounded text-[10px] text-cyan-300 font-medium">
+                      Sensor: ISRO 0.5m
+                    </div>
+                  </div>
+                  
+                  <div className="bg-slate-900 p-3.5 rounded-xl border border-slate-800">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className="text-xs text-slate-200 font-medium">
+                        {change ? change.changeType : 'Structural Consistency Verified'}
+                      </div>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800/40">
+                        {change ? `${change.confidence}% match` : '99% match'}
+                      </span>
+                    </div>
+                    <div className="text-[11px] text-slate-400 mt-1">
+                      {change
+                        ? `${change.changeType} detected on ${change.detectedDate}. Status: ${change.verificationStatus}.`
+                        : 'No construction encroachment or unauthorised land cover changes detected against master plan zoning.'}
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <Link
+                        href={`/parcels/${selectedParcel.id}`}
+                        className="flex-1 py-2 text-center bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs font-semibold rounded-lg border border-cyan-500/20 transition-colors"
+                      >
+                        Inspect Parcel 360
+                      </Link>
+                      <Link
+                        href="/planning?tab=satellite"
+                        className="flex-1 py-2 text-center bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 text-xs font-semibold rounded-lg border border-indigo-500/25 transition-colors"
+                      >
+                        Planning Queue
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-                
-                <div className="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                  <div className="text-xs text-slate-300 font-medium mb-1">Potential built-up area change detected</div>
-                  <div className="text-[11px] text-slate-500">Confidence: 87%</div>
-                  <button className="mt-3 w-full py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-xs font-medium rounded-lg border border-cyan-500/20 transition-colors">
-                    Generate Field Task
-                  </button>
-                </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         </aside>
       )}

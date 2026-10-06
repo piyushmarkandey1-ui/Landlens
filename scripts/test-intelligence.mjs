@@ -22,15 +22,15 @@ function transpile(source, fileName) {
 }
 
 function loadModule(source, fileName, dependencies = {}) {
-  const module = { exports: {} };
+  const mod = { exports: {} };
   const context = vm.createContext({
-    module,
-    exports: module.exports,
+    module: mod,
+    exports: mod.exports,
     require: (request) => dependencies[request] ?? require(request),
     console,
   });
   vm.runInContext(transpile(source, fileName), context, { filename: fileName });
-  return module.exports;
+  return mod.exports;
 }
 
 const types = loadModule(typesSource, 'types.ts');

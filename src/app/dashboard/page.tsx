@@ -6,15 +6,15 @@ import { useAuth, ROLE_LABELS } from '@/lib/auth';
 import AppShell from '@/components/AppShell';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  AlertTriangle, CheckCircle2, Clock, FileText, Workflow,
-  Map, BarChart3, Activity, ArrowRight, Database,
-  Layers, ArrowUpRight, Sparkles, MapPin,
-  ShieldCheck, ChevronRight, TrendingUp, Search
+  AlertTriangle, FileText, Workflow,
+  Map, BarChart3, ArrowRight, Database,
+  ArrowUpRight, MapPin,
+  ShieldCheck, ChevronRight, Search
 } from 'lucide-react';
 import Link from 'next/link';
 import {
   CONFLICT_ALERTS, WORKFLOW_TASKS, SERVICE_REQUESTS,
-  DISTRICT_ANALYTICS, DATA_SOURCES,
+  DATA_SOURCES,
 } from '@/lib/data';
 
 /* ─── Animated counter ─── */

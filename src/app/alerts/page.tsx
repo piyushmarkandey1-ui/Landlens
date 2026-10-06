@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 import AppShell from '@/components/AppShell';
 import { CONFLICT_ALERTS } from '@/lib/data';
-import { SEVERITY_COLORS, ALERT_TYPE_LABELS } from '@/lib/engine';
-import { AlertTriangle, ExternalLink, CheckCircle2, Filter, ChevronDown } from 'lucide-react';
+import { ALERT_TYPE_LABELS } from '@/lib/engine';
+import { AlertTriangle, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
@@ -18,16 +18,16 @@ const SEV_DOT: Record<string, string> = {
 };
 
 const SEV_CHIP: Record<string, { bg: string; text: string; border: string }> = {
-  critical: { bg: '#fff1f2', text: '#9f1239', border: '#fecdd3' },
-  high:     { bg: '#fff7ed', text: '#9a3412', border: '#fed7aa' },
-  medium:   { bg: '#fffbeb', text: '#92400e', border: '#fde68a' },
-  low:      { bg: '#f0fdf4', text: '#166534', border: '#bbf7d0' },
+  critical: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+  high:     { bg: 'bg-orange-50', text: 'text-orange-800', border: 'border-orange-200' },
+  medium:   { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200' },
+  low:      { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
 };
 
 const STATUS_CHIP: Record<string, { bg: string; text: string; border: string }> = {
-  Open:          { bg: '#fff1f2', text: '#9f1239', border: '#fecdd3' },
-  'Under Review': { bg: '#fffbeb', text: '#92400e', border: '#fde68a' },
-  Resolved:      { bg: '#f0fdf4', text: '#166534', border: '#bbf7d0' },
+  Open:          { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200' },
+  'Under Review': { bg: 'bg-amber-50', text: 'text-amber-800', border: 'border-amber-200' },
+  Resolved:      { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200' },
 };
 
 function FilterPill({
@@ -36,14 +36,11 @@ function FilterPill({
   return (
     <button
       onClick={onClick}
-      className="px-3 py-1.5 rounded-full text-xs font-semibold transition-all capitalize"
-      style={{
-        background: active ? 'var(--c-indigo-600)' : '#fff',
-        color:      active ? '#fff' : 'var(--text-tertiary)',
-        border:     `1px solid ${active ? 'var(--c-indigo-600)' : 'var(--border)'}`,
-        boxShadow:  active ? 'var(--shadow-indigo)' : 'var(--shadow-xs)',
-        transition: 'all var(--duration-fast)',
-      }}
+      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all capitalize border ${
+        active
+          ? 'bg-blue-50 text-blue-700 border-blue-300 shadow-2xs'
+          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+      }`}
     >
       {label}
     </button>
@@ -76,82 +73,71 @@ export default function AlertsPage() {
 
   return (
     <AppShell>
-      <div className="page-container">
+      <div className="p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
 
         {/* Header */}
-        <div className="page-header">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <h1
-                className="font-display font-bold text-2xl"
-                style={{ color: 'var(--text-primary)', letterSpacing: '-0.03em' }}
-              >
-                Conflicts & Alerts
-              </h1>
-              <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>
-                Land Truth Engine — cross-dataset conflict detections requiring attention
-              </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+          <div>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-rose-50 text-rose-700 border border-rose-200/80 mb-2">
+              <AlertTriangle size={11} /> Cross-Agency Integrity
             </div>
-            <span className="chip chip-red mt-1">{counts.critical + counts.high + counts.medium} active</span>
+            <h1 className="font-heading font-bold text-2xl lg:text-3xl text-slate-900 tracking-tight">
+              Discrepancies & Conflict Alerts
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl leading-relaxed">
+              Land Truth Engine — deterministic cross-dataset discrepancies requiring inter-agency verification.
+            </p>
           </div>
+          <span className="self-start sm:self-auto chip text-xs font-semibold px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+            {counts.critical + counts.high + counts.medium} Active Flags
+          </span>
         </div>
 
-        {/* Summary cards */}
-        <div className="grid grid-cols-3 gap-4 mb-5">
+        {/* Severity Count Summary Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {([
-            { label: 'Critical', count: counts.critical, sev: 'critical', dot: '#ef4444', bg: '#fff1f2', border: '#fecdd3', text: '#9f1239' },
-            { label: 'High',     count: counts.high,     sev: 'high',     dot: '#f97316', bg: '#fff7ed', border: '#fed7aa', text: '#9a3412' },
-            { label: 'Medium',   count: counts.medium,   sev: 'medium',   dot: '#f59e0b', bg: '#fffbeb', border: '#fde68a', text: '#92400e' },
+            { label: 'Critical Severity', count: counts.critical, sev: 'critical', dot: '#ef4444', bg: 'bg-rose-50/70', border: 'border-rose-200', text: 'text-rose-700' },
+            { label: 'High Severity',     count: counts.high,     sev: 'high',     dot: '#f97316', bg: 'bg-orange-50/70', border: 'border-orange-200', text: 'text-orange-800' },
+            { label: 'Medium Severity',   count: counts.medium,   sev: 'medium',   dot: '#f59e0b', bg: 'bg-amber-50/70', border: 'border-amber-200', text: 'text-amber-800' },
           ] as const).map((item, i) => (
             <motion.button
               key={item.label}
               onClick={() => setSev(s => s === item.sev ? 'all' : item.sev)}
-              className="card-action text-left p-4 relative overflow-hidden"
+              className={`text-left p-5 rounded-2xl border transition-all shadow-xs cursor-pointer ${
+                sev === item.sev ? `${item.bg} ${item.border} ring-2 ring-blue-200` : 'bg-white border-slate-200/80 hover:border-slate-300'
+              }`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-              style={{
-                borderLeft: sev === item.sev ? `3px solid ${item.dot}` : undefined,
-                background: sev === item.sev ? item.bg : '#fff',
-                borderColor: sev === item.sev ? item.border : undefined,
-              }}
+              transition={{ delay: i * 0.05 }}
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 rounded-full" style={{ background: item.dot }} />
-                <span className="text-xs font-semibold" style={{ color: item.text }}>{item.label}</span>
+                <span className={`text-xs font-semibold ${item.text}`}>{item.label}</span>
               </div>
-              <div
-                className="font-display font-bold text-3xl"
-                style={{ color: 'var(--text-primary)', letterSpacing: '-0.04em' }}
-              >
+              <div className="font-heading font-bold text-3xl text-slate-900 tracking-tight">
                 {item.count}
               </div>
-              <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>open alerts</div>
+              <div className="text-xs text-slate-500 mt-0.5">Active conflicts in queue</div>
             </motion.button>
           ))}
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-3 mb-5 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1.5">
-            <span className="text-label mr-1">Status</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider text-[10px] mr-1">Status:</span>
             {['active', 'all', 'Resolved'].map(s => (
               <FilterPill key={s} label={s === 'active' ? 'Active' : s} active={status === s} onClick={() => setStatus(s)} />
             ))}
           </div>
-          <div className="w-px h-5" style={{ background: 'var(--border)' }} />
+          <div className="w-px h-5 bg-slate-200 hidden sm:block" />
           <div className="flex items-center gap-1.5">
-            <span className="text-label mr-1">Severity</span>
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider text-[10px] mr-1">Severity:</span>
             {['all', 'critical', 'high', 'medium', 'low'].map(s => (
               <FilterPill key={s} label={s} active={sev === s} onClick={() => setSev(s)} />
             ))}
           </div>
         </div>
-
-        {/* Results count */}
-        <p className="text-xs mb-4" style={{ color: 'var(--text-muted)' }}>
-          {filtered.length} alert{filtered.length !== 1 ? 's' : ''} matching current filters
-        </p>
 
         {/* Alert list */}
         <div className="space-y-3">
@@ -160,14 +146,14 @@ export default function AlertsPage() {
               <motion.div
                 key="empty"
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                className="card flex flex-col items-center py-16 text-center"
+                className="bg-white border border-slate-200/80 rounded-2xl flex flex-col items-center py-16 text-center shadow-xs"
               >
-                <CheckCircle2 size={32} style={{ color: 'var(--c-green-500)', marginBottom: 12 }} />
-                <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+                <CheckCircle2 size={32} className="text-emerald-500 mb-3" />
+                <p className="text-sm font-semibold text-slate-900">
                   No alerts match these filters
                 </p>
-                <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-                  Try adjusting the severity or status filter above
+                <p className="text-xs text-slate-500 mt-1">
+                  Try adjusting the severity or status filter above.
                 </p>
               </motion.div>
             ) : (
@@ -184,94 +170,50 @@ export default function AlertsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.97 }}
                     transition={{ delay: i * 0.03, duration: 0.22 }}
-                    className="card overflow-hidden"
-                    style={{ borderLeft: `3px solid ${dot}` }}
+                    className="bg-white border border-slate-200/80 rounded-2xl shadow-xs overflow-hidden hover:border-blue-400 transition-colors"
+                    style={{ borderLeft: `4px solid ${dot}` }}
                   >
-                    <div className="p-4">
+                    <div className="p-5">
                       {/* Top row */}
                       <div className="flex items-start justify-between gap-3 mb-3">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span
-                            className="chip capitalize"
-                            style={{ background: s.bg, color: s.text, borderColor: s.border }}
-                          >
+                          <span className={`chip text-[10px] font-semibold px-2 py-0.5 rounded-md border capitalize ${s.bg} ${s.text} ${s.border}`}>
                             {alert.severity}
                           </span>
-                          <span
-                            className="chip"
-                            style={{ background: 'var(--bg-inset)', color: 'var(--text-tertiary)', borderColor: 'var(--border)' }}
-                          >
-                            {ALERT_TYPE_LABELS[alert.alertType as keyof typeof ALERT_TYPE_LABELS] ?? alert.alertType}
+                          <span className={`chip text-[10px] font-semibold px-2 py-0.5 rounded-md border ${st.bg} ${st.text} ${st.border}`}>
+                            {alert.status}
                           </span>
-                          <span className="chip chip-slate font-mono text-[10px]">{alert.parcelId}</span>
+                          <span className="chip text-[10px] bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded-md">
+                            {ALERT_TYPE_LABELS[alert.alertType] ?? alert.alertType}
+                          </span>
                         </div>
-                        <span
-                          className="chip flex-shrink-0"
-                          style={{ background: st.bg, color: st.text, borderColor: st.border }}
-                        >
-                          {alert.status}
+                        <span className="text-[11px] text-slate-400 font-mono flex-shrink-0">
+                          {alert.detectedDate}
                         </span>
                       </div>
 
-                      {/* Title */}
-                      <h3 className="font-semibold text-sm mb-1.5" style={{ color: 'var(--text-primary)' }}>
+                      {/* Title & Desc */}
+                      <h3 className="font-heading font-bold text-sm text-slate-900 mb-1">
                         {alert.title}
                       </h3>
-                      <p className="text-xs leading-relaxed mb-3" style={{ color: 'var(--text-tertiary)' }}>
+                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
                         {alert.description}
                       </p>
 
-                      {/* Values grid */}
-                      {Object.keys(alert.values).length > 0 && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-3">
-                          {Object.entries(alert.values).map(([k, v]) => (
-                            <div
-                              key={k}
-                              className="panel-inset px-3 py-2"
-                            >
-                              <div className="text-label text-[9px]">{k}</div>
-                              <div className="text-xs font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                                {String(v)}
-                              </div>
-                            </div>
-                          ))}
-                          {alert.difference && (
-                            <div
-                              className="px-3 py-2 rounded-lg col-span-2 sm:col-span-1"
-                              style={{ background: 'var(--c-red-50)', border: '1px solid var(--c-red-100)' }}
-                            >
-                              <div className="text-label text-[9px]">Difference</div>
-                              <div className="text-xs font-semibold mt-0.5" style={{ color: 'var(--c-red-700)' }}>
-                                {alert.difference}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
-
-                      {/* Recommended action */}
-                      <div
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg mb-3"
-                        style={{ background: 'var(--c-indigo-50)', border: '1px solid var(--c-indigo-100)' }}
-                      >
-                        <span className="text-xs" style={{ color: 'var(--c-indigo-400)' }}>→</span>
-                        <span className="text-xs font-medium" style={{ color: 'var(--c-indigo-700)' }}>
-                          {alert.recommendedAction.split('.')[0]}.
-                        </span>
-                      </div>
-
                       {/* Footer */}
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono" style={{ color: 'var(--text-muted)' }}>
-                          Detected {alert.detectedDate} · {(alert.datasetsCompared as string[]).join(' · ')}
-                        </span>
-                        <Link
-                          href={`/parcels/${alert.parcelId}`}
-                          className="flex items-center gap-1 text-xs font-semibold"
-                          style={{ color: 'var(--c-indigo-600)' }}
-                        >
-                          View Parcel <ExternalLink size={11} />
-                        </Link>
+                      <div className="flex items-center justify-between gap-4 pt-3.5 border-t border-slate-100 flex-wrap text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-400">Target Parcel:</span>
+                          <Link
+                            href={`/parcels/${alert.parcelId}`}
+                            className="font-mono font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 underline"
+                          >
+                            {alert.parcelId} <ExternalLink size={11} />
+                          </Link>
+                        </div>
+                        <div className="text-[11px] text-slate-500">
+                          Sources: <span className="font-medium text-slate-700">{alert.datasetsCompared.join(' · ')}</span>
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -280,7 +222,6 @@ export default function AlertsPage() {
             )}
           </AnimatePresence>
         </div>
-
       </div>
     </AppShell>
   );

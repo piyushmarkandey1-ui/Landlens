@@ -1,18 +1,17 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import * as THREE from 'three';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import {
   ArrowRight, ArrowUpRight, CheckCircle2, ChevronRight,
-  Database, FileCheck2, GitMerge, Layers, MapPin,
-  Play, Shield, ShieldCheck, Sparkles, Waypoints,
+  Database, FileCheck2, GitMerge, Layers,
+  Play, ShieldCheck, Waypoints,
   FileText, Users, Activity
 } from 'lucide-react';
-// @ts-expect-error maath ships without types
-import * as random from 'maath/random/dist/maath-random.esm';
 
 const sources = [
   { name: 'Record of Rights', code: 'BHU-RoR', records: '8.9M', status: 'Live Sync', desc: 'Ownership, tenancy, mutation history' },
@@ -30,9 +29,25 @@ const metrics = [
   { value: '100%', label: 'ULPIN Standard', sub: 'ISO 19152 compliant' },
 ];
 
+function generateSpherePoints(count: number, radius = 1.25): Float32Array {
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const u = Math.random();
+    const x = Math.random() * 2 - 1;
+    const y = Math.random() * 2 - 1;
+    const z = Math.random() * 2 - 1;
+    const mag = Math.sqrt(x * x + y * y + z * z) || 1;
+    const r = Math.cbrt(u) * radius;
+    positions[i * 3] = (x / mag) * r;
+    positions[i * 3 + 1] = (y / mag) * r;
+    positions[i * 3 + 2] = (z / mag) * r;
+  }
+  return positions;
+}
+
 function ParcelPointField() {
-  const ref = useRef<any>(null);
-  const [positions] = useState(() => random.inSphere(new Float32Array(3200), { radius: 1.25 }));
+  const ref = useRef<THREE.Points>(null);
+  const [positions] = useState(() => generateSpherePoints(1000, 1.25));
 
   useFrame((_, delta) => {
     if (ref.current) {
@@ -136,14 +151,14 @@ function ParcelConsole() {
         </span>
         <div className="flex items-center gap-1.5 w-full sm:w-auto justify-end">
           {[
-            { id: 'all', label: 'Composite' },
-            { id: 'ror', label: 'RoR Data' },
-            { id: 'zoning', label: 'Zoning' },
-            { id: 'satellite', label: 'Satellite' },
+            { id: 'all' as const, label: 'Composite' },
+            { id: 'ror' as const, label: 'RoR Data' },
+            { id: 'zoning' as const, label: 'Zoning' },
+            { id: 'satellite' as const, label: 'Satellite' },
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveLayer(tab.id as any)}
+              onClick={() => setActiveLayer(tab.id)}
               className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all ${
                 activeLayer === tab.id
                   ? 'bg-blue-600 text-white shadow-xs'
