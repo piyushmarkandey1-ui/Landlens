@@ -113,7 +113,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       {/* ═══════════ SIDEBAR ═══════════ */}
       <aside
         className={`
-          fixed inset-y-0 left-0 z-50 flex flex-col w-[236px] bg-white border-r border-slate-200/80 shadow-xs
+          fixed inset-y-0 left-0 z-50 flex flex-col w-[236px] bg-[#071A2B] border-r border-[#18364a] shadow-xl
           lg:relative lg:translate-x-0 lg:z-auto transition-transform duration-200 ease-out
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -122,24 +122,24 @@ export default function AppShell({ children }: { children: ReactNode }) {
         <Link
           href="/dashboard"
           onClick={() => setMobileOpen(false)}
-          className="flex items-center gap-2.5 px-4 py-3.5 border-b border-slate-200/80 group"
+          className="flex items-center gap-2.5 px-4 py-3.5 border-b border-[#18364a] group"
         >
           <div className="gradient-brand w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 shadow-xs group-hover:scale-105 transition-transform">
             <Sparkles size={13} className="text-white" />
           </div>
           <div className="leading-tight">
-            <div className="font-display font-bold text-sm tracking-tight text-slate-900">
+            <div className="font-display font-bold text-sm tracking-tight text-white">
               LandLens
             </div>
-            <div className="text-[9px] font-mono text-slate-400 uppercase tracking-wider">
-              GIS Intelligence
+            <div className="text-[9px] font-mono text-[#8aa5b4] uppercase tracking-wider">
+              Land Governance
             </div>
           </div>
         </Link>
 
         {/* User Card */}
-        <div className="p-3 border-b border-slate-200/80">
-          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200/60">
+        <div className="p-3 border-b border-[#18364a]">
+          <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/5 border border-white/10">
             <Avatar name={user.name} size={32} />
             <div className="min-w-0 flex-1">
               <div className="text-xs font-semibold text-slate-900 truncate leading-tight">
@@ -169,20 +169,20 @@ export default function AppShell({ children }: { children: ReactNode }) {
                         onClick={() => setMobileOpen(false)}
                         className={`relative flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                           active
-                            ? 'text-indigo-700 font-semibold'
-                            : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/70'
+                            ? 'text-white font-semibold'
+                            : 'text-[#9ab0bd] hover:text-white hover:bg-white/5'
                         }`}
                       >
                         {/* Animated sliding background pill */}
                         {active && (
                           <motion.div
                             layoutId="sidebarActiveBackground"
-                            className="absolute inset-0 bg-indigo-50 border border-indigo-200/80 rounded-lg -z-10"
+                            className="absolute inset-0 bg-[#00c2a8]/15 border border-[#00c2a8]/30 rounded-lg -z-10"
                             transition={{ type: 'spring', stiffness: 450, damping: 30 }}
                           />
                         )}
 
-                        <span className={`flex-shrink-0 transition-colors ${active ? 'text-indigo-600' : 'text-slate-400'}`}>
+                        <span className={`flex-shrink-0 transition-colors ${active ? 'text-[#00c2a8]' : 'text-[#8aa5b4]'}`}>
                           {item.icon}
                         </span>
                         <span className="flex-1 truncate">{item.label}</span>
@@ -216,7 +216,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Top Sticky Header */}
-        <header className="h-14 flex items-center justify-between gap-3 px-4 bg-white/85 backdrop-blur-md border-b border-slate-200/80 flex-shrink-0 z-30">
+        <header className="h-14 flex items-center justify-between gap-3 px-4 bg-white/95 backdrop-blur-md border-b border-[#dce5ea] flex-shrink-0 z-30">
           <div className="flex items-center gap-3">
             {/* Mobile burger */}
             <button

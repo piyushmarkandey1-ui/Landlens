@@ -9,14 +9,14 @@
 
 :root {
   /* Brand */
-  --c-indigo-50:  #eef2ff;
-  --c-indigo-100: #e0e7ff;
-  --c-indigo-200: #c7d2fe;
-  --c-indigo-300: #a5b4fc;
-  --c-indigo-400: #818cf8;
-  --c-indigo-500: #6366f1;
-  --c-indigo-600: #4f46e5;
-  --c-indigo-700: #4338ca;
+  --c-indigo-50:  #e8fbf7;
+  --c-indigo-100: #c7f4ec;
+  --c-indigo-200: #94e8da;
+  --c-indigo-300: #5fd8c5;
+  --c-indigo-400: #24c8b2;
+  --c-indigo-500: #00c2a8;
+  --c-indigo-600: #009f8b;
+  --c-indigo-700: #007c6d;
 
   /* Neutrals */
   --c-gray-50:  #f9fafb;
@@ -73,22 +73,22 @@
   --c-cyan-900:   #164e63;
 
   /* ── Surfaces ── */
-  --bg-page:   #f8fafc;
+  --bg-page:   #f5f8fa;
   --bg-card:   #ffffff;
-  --bg-inset:  #f1f5f9;
-  --bg-hover:  #f8fafc;
+  --bg-inset:  #edf4f5;
+  --bg-hover:  #f5fbfa;
 
   /* ── Borders ── */
-  --border:        #e2e8f0;
-  --border-medium: #cbd5e1;
-  --border-accent: rgba(99,102,241,0.25);
+  --border:        #dce5ea;
+  --border-medium: #c4d4da;
+  --border-accent: rgba(0,194,168,0.3);
 
   /* ── Text ── */
-  --text-primary:   #0f172a;
-  --text-secondary: #334155;
-  --text-tertiary:  #64748b;
-  --text-muted:     #94a3b8;
-  --text-disabled:  #cbd5e1;
+  --text-primary:   #10202f;
+  --text-secondary: #294154;
+  --text-tertiary:  #617285;
+  --text-muted:     #8a9baa;
+  --text-disabled:  #c4d4da;
 
   /* ── Shadows ── */
   --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
@@ -244,7 +244,7 @@ button {
 .surface-elevated { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
 .glass-card       { background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
 
-/* ──────────────────────────────────────────────────���──────────
+/* ─────────────────────────────────────────────���────���──────────
    NAVIGATION
 ───────────────────────────────────────────────────────────── */
 .nav-item {
@@ -269,9 +269,9 @@ button {
   background: var(--c-slate-50);
 }
 .nav-item.active {
-  color: var(--c-indigo-700);
-  background: var(--c-indigo-50);
-  border-color: var(--c-indigo-200);
+  color: #007c6d;
+  background: #e8fbf7;
+  border-color: #94e8da;
   font-weight: 600;
 }
 
@@ -319,7 +319,7 @@ button {
 .btn:active { transform: scale(0.98); transition-duration: var(--duration-fast); }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--c-indigo-600), var(--c-indigo-500));
+  background: linear-gradient(135deg, #00c2a8, #009f8b);
   color: #fff;
   box-shadow: var(--shadow-indigo);
   border-color: var(--c-indigo-600);
@@ -434,7 +434,7 @@ button {
 .data-table tbody tr { transition: background var(--duration-fast); }
 .data-table tbody tr:hover { background: var(--c-indigo-50); cursor: pointer; }
 
-/* ───────────────────────────────���─────────────────────────────
+/* ────────────────────────���──────���─────────────────────────────
    PROGRESS / SCORE BAR
 ───────────────────────────────────────────────────────────── */
 .score-bar { height: 5px; border-radius: var(--radius-full); background: var(--c-slate-200); overflow: hidden; }
@@ -627,7 +627,7 @@ body:has(.landing-page-wrapper) .demo-badge { display: none; }
 
 /* ─────────────────────────────────────────────────────────────
    RECHARTS
-───────────────────────��───────────────────────────────────── */
+──────────────��────────��───────────────────────────────────── */
 .recharts-tooltip-wrapper .recharts-default-tooltip {
   background: #fff !important;
   border: 1px solid var(--border) !important;

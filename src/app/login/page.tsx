@@ -24,7 +24,7 @@ const ROLES: Record<UserRole, {
     icon: <Users className="w-4 h-4" />,
     desc: 'Public parcel lookup, land use checks, "Can I build here?" automated analysis, and application tracking.',
     access: ['Public parcel records', 'Land use & zoning lookup', '"Can I build here?" tool', 'Service request tracking'],
-    accent: '#16a34a', bgLight: '#f0fdf4', borderLight: '#bbf7d0',
+    accent: '#00aF98', bgLight: '#e8fbf7', borderLight: '#94e8da',
   },
   revenue_officer: {
     icon: <FileText className="w-4 h-4" />,
@@ -42,7 +42,7 @@ const ROLES: Record<UserRole, {
     icon: <GitMerge className="w-4 h-4" />,
     desc: 'Validate deed registrations, check encumbrance status, and inspect cross-departmental record matches.',
     access: ['Deed registration records', 'Transaction & encumbrances', 'Document verification workflow', 'Revenue cross-check alerts'],
-    accent: '#7c3aed', bgLight: '#fdf4ff', borderLight: '#e9d5ff',
+    accent: '#009f8b', bgLight: '#e8fbf7', borderLight: '#94e8da',
   },
   district_admin: {
     icon: <BarChart3 className="w-4 h-4" />,
@@ -82,7 +82,7 @@ export default function LoginPage() {
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden"
-      style={{ background: 'var(--bg-page)' }}
+      style={{ background: '#071A2B' }}
     >
       {/* Subtle grid background */}
       <div className="absolute inset-0 parcel-grid-bg pointer-events-none opacity-40" />
@@ -121,7 +121,7 @@ export default function LoginPage() {
             </div>
           </Link>
 
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-white">
             Select Demonstration Persona
           </h1>
           <p className="text-xs text-slate-500 mt-1">
@@ -136,7 +136,7 @@ export default function LoginPage() {
 
         {/* ── Balanced 2-Column Role Card ── */}
         <motion.div
-          className="bg-white rounded-2xl border border-slate-200/80 shadow-xl overflow-hidden"
+          className="bg-white rounded-2xl border border-white/10 shadow-2xl overflow-hidden"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.08 }}
@@ -273,7 +273,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-xs uppercase tracking-wider text-white shadow-md transition-all hover:opacity-95 active:scale-[0.99] disabled:opacity-50"
                   style={{
-                    background: `linear-gradient(135deg, ${cfg.accent}, #4f46e5)`,
+                    background: `linear-gradient(135deg, ${cfg.accent}, #007c6d)`,
                   }}
                 >
                   {loading ? (
