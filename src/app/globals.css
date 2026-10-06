@@ -161,7 +161,7 @@ button {
 /* ─────────────────────────────────────────────────────────────
    TYPOGRAPHY
 ───────────────────────────────────────────────────────────── */
-.font-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+.font-display, .font-heading { font-family: var(--font-display); letter-spacing: -0.02em; }
 .font-mono    { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
 .text-label {
@@ -244,7 +244,7 @@ button {
 .surface-elevated { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
 .glass-card       { background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.9); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
 
-/* ─────────────────────────────────────────────────────────────
+/* ──────────────────────────────────────────────────���──────────
    NAVIGATION
 ───────────────────────────────────────────────────────────── */
 .nav-item {
@@ -434,7 +434,7 @@ button {
 .data-table tbody tr { transition: background var(--duration-fast); }
 .data-table tbody tr:hover { background: var(--c-indigo-50); cursor: pointer; }
 
-/* ─────────────────────────────────────────────────────────────
+/* ───────────────────────────────���─────────────────────────────
    PROGRESS / SCORE BAR
 ───────────────────────────────────────────────────────────── */
 .score-bar { height: 5px; border-radius: var(--radius-full); background: var(--c-slate-200); overflow: hidden; }
@@ -627,7 +627,7 @@ body:has(.landing-page-wrapper) .demo-badge { display: none; }
 
 /* ─────────────────────────────────────────────────────────────
    RECHARTS
-───────────────────────────────────────────────────────────── */
+───────────────────────��───────────────────────────────────── */
 .recharts-tooltip-wrapper .recharts-default-tooltip {
   background: #fff !important;
   border: 1px solid var(--border) !important;

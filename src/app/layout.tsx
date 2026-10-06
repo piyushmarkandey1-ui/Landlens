@@ -4,8 +4,8 @@ import { AuthProvider } from '@/lib/auth';
 import DemoBadge from '@/components/ui/DemoBadge';
 
 export const metadata: Metadata = {
-  title: 'LandLens — Intelligence Layer for India\'s Land Stack',
-  description: 'LandLens connects fragmented land records, registration, planning, taxation and citizen services around every parcel using ULPIN-based parcel intelligence.',
+  title: 'LandLens — The Intelligence Layer for Land Governance',
+  description: 'One parcel. Every record. One intelligent view. LandLens connects fragmented land records, maps, planning and registration around a common parcel identity.',
   keywords: 'land records, ULPIN, cadastral, GIS, parcel intelligence, India, land governance, DILRMP',
   openGraph: {
     title: 'LandLens — Intelligence Layer for India\'s Land Stack',
