@@ -92,9 +92,10 @@ export default function PremiumLandingPage() {
             </Link>
             <Link 
               href="/login" 
-              className="text-sm font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors px-5 py-2.5 rounded-lg"
+              aria-label="Log in to LandLens"
+              className="inline-flex min-w-[102px] items-center justify-center rounded-lg border border-slate-900 bg-slate-900 px-5 py-2.5 text-sm font-semibold !text-white shadow-sm transition-colors hover:bg-slate-700 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
             >
-              Login
+              <span className="!text-white">Login</span>
             </Link>
           </div>
         </div>
