@@ -515,9 +515,9 @@ export default function PremiumLandingPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link 
               href="/login" 
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-slate-100 text-slate-900 font-bold text-lg rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-slate-100 !text-slate-900 font-bold text-lg rounded-lg transition-colors"
             >
-              Explore LandLens <ArrowRight size={20} />
+              <span className="!text-slate-900">Explore LandLens</span> <ArrowRight size={20} aria-hidden="true" />
             </Link>
             <Link 
               href="/login" 
