@@ -72,10 +72,10 @@
   --c-orange-600: #ea580c;
   --c-orange-900: #7c2d12;
 
-  --c-cyan-100:   #cffafe;
-  --c-cyan-500:   #06b6d4;
-  --c-cyan-600:   #0891b2;
-  --c-cyan-900:   #164e63;
+  --c-cyan-100:   #E8DCC8;
+  --c-cyan-500:   #C6A75E;
+  --c-cyan-600:   #C6A75E;
+  --c-cyan-900:   #1F2A44;
 
   /* ── Surfaces ── */
   --bg-page:   var(--brand-navy);
@@ -446,7 +446,7 @@ button {
 .score-bar-fill {
   height: 100%;
   border-radius: var(--radius-full);
-  background: linear-gradient(90deg, var(--c-indigo-500), var(--c-cyan-500));
+  background: linear-gradient(90deg, var(--brand-navy), var(--brand-gold));
   transition: width 0.9s var(--ease-out);
 }
 
@@ -525,7 +525,7 @@ button {
 .icon-green   { background: var(--c-green-50);  color: var(--c-green-600); }
 .icon-amber   { background: var(--c-amber-50);  color: var(--c-amber-600); }
 .icon-red     { background: var(--c-red-50);    color: var(--c-red-600); }
-.icon-cyan    { background: #ecfeff;            color: var(--c-cyan-600); }
+.icon-cyan    { background: var(--brand-beige);   color: var(--brand-navy); }
 .icon-slate   { background: var(--c-slate-100); color: var(--c-slate-600); }
 .icon-orange  { background: #fff7ed;            color: var(--c-orange-600); }
 
@@ -582,10 +582,10 @@ button {
    GRADIENTS
 ───────────────────────────────────────────────────────────── */
 .gradient-brand {
-  background: linear-gradient(135deg, var(--c-indigo-600) 0%, var(--c-indigo-500) 60%, #06b6d4 100%);
+  background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-gold) 100%);
 }
 .gradient-text {
-  background: linear-gradient(135deg, var(--c-indigo-600), #06b6d4);
+  background: linear-gradient(135deg, var(--brand-gold), var(--brand-beige));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -601,7 +601,64 @@ button {
 /* ─────────────────────────────────────────────────────────────
    DEMO BADGE
 ───────────────────────────────────────────────────────────── */
-.demo-badge {
+/* Strict LandLens palette enforcement */
+.landing-page-wrapper {
+  background: var(--brand-navy) !important;
+  color: var(--brand-beige) !important;
+}
+.landing-page-wrapper .bg-white,
+.landing-page-wrapper .bg-slate-50\/50,
+.landing-page-wrapper .bg-slate-50\/70,
+.landing-page-wrapper .bg-slate-50\/80,
+.landing-page-wrapper .bg-slate-50 {
+  background-color: var(--brand-beige) !important;
+}
+.landing-page-wrapper .text-slate-900,
+.landing-page-wrapper .text-slate-800,
+.landing-page-wrapper .text-slate-700,
+.landing-page-wrapper .text-slate-600,
+.landing-page-wrapper .text-slate-500,
+.landing-page-wrapper .text-slate-400,
+.landing-page-wrapper .text-blue-600,
+.landing-page-wrapper .text-blue-700,
+.landing-page-wrapper .text-indigo-700,
+.landing-page-wrapper .text-emerald-700,
+.landing-page-wrapper .text-emerald-600 {
+  color: var(--brand-navy) !important;
+}
+.landing-page-wrapper .bg-blue-600,
+.landing-page-wrapper .bg-blue-700,
+.landing-page-wrapper .bg-indigo-600,
+.landing-page-wrapper .bg-emerald-600 {
+  background-color: var(--brand-gold) !important;
+  color: var(--brand-navy) !important;
+}
+.landing-page-wrapper .border-slate-200,
+.landing-page-wrapper .border-slate-200\/80,
+.landing-page-wrapper .border-slate-200\/90,
+.landing-page-wrapper .border-slate-100,
+.landing-page-wrapper .border-blue-200,
+.landing-page-wrapper .border-blue-500\/40,
+.landing-page-wrapper .border-rose-200,
+.landing-page-wrapper .border-emerald-200,
+.landing-page-wrapper .border-indigo-200 {
+  border-color: var(--brand-gold) !important;
+}
+.landing-page-wrapper .hover\:text-blue-600:hover { color: var(--brand-gold) !important; }
+.landing-page-wrapper .hover\:bg-blue-700:hover,
+.landing-page-wrapper .hover\:bg-slate-50:hover,
+.landing-page-wrapper .hover\:bg-slate-200\/60:hover {
+  background-color: var(--brand-gold) !important;
+  color: var(--brand-navy) !important;
+}
+.landing-page-wrapper .bg-gradient-to-r {
+  background-image: linear-gradient(to right, var(--brand-gold), var(--brand-beige)) !important;
+}
+.landing-page-wrapper .bg-gradient-to-b {
+  background-image: linear-gradient(to bottom, var(--brand-beige), var(--brand-navy)) !important;
+}
+
+	.demo-badge {
   position: fixed;
   bottom: 16px;
   right: 16px;

@@ -61,7 +61,7 @@ function ParcelPointField() {
       <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
         <PointMaterial
           transparent
-          color="#2563eb"
+          color="#C6A75E"
           size={0.007}
           sizeAttenuation
           depthWrite={false}

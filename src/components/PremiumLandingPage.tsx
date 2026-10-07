@@ -64,12 +64,12 @@ const TRUST_ITEMS = [
 
 export default function PremiumLandingPage() {
   return (
-    <div className="min-h-screen bg-[#f5f8fa] text-[#10202f]">
+    <div className="min-h-screen bg-[#F4EBDD] text-[#1F2A44]">
       
       {/* ============================================================
           NAVIGATION
           ============================================================ */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#071A2B]/95 backdrop-blur-xl border-b border-[#18364a]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1F2A44]/95 backdrop-blur-xl border-b border-[#C6A75E]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="font-heading font-bold text-xl text-white">
             LANDLENS
@@ -104,7 +104,7 @@ export default function PremiumLandingPage() {
       {/* ============================================================
           HERO SECTION
           ============================================================ */}
-      <section className="pt-32 pb-20 px-6 bg-[#071A2B] text-white">
+      <section className="pt-32 pb-20 px-6 bg-[#1F2A44] text-white">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <motion.div
@@ -112,7 +112,7 @@ export default function PremiumLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-block px-3 py-1 rounded-full bg-[#00c2a8]/15 text-[#5fd8c5] text-xs font-medium mb-6 uppercase tracking-wider">
+            <div className="inline-block px-3 py-1 rounded-full bg-[#C6A75E]/15 text-[#E8DCC8] text-xs font-medium mb-6 uppercase tracking-wider">
               GIS Intelligence for Land Governance
             </div>
             
@@ -124,20 +124,20 @@ export default function PremiumLandingPage() {
               One parcel. Every record.<br />One intelligent view.
             </p>
             
-            <p className="text-lg text-[#c5d6df] leading-relaxed mb-8 max-w-xl">
+            <p className="text-lg text-[#E8DCC8] leading-relaxed mb-8 max-w-xl">
               LandLens connects fragmented land records, maps, planning, registration and spatial data around a common parcel identity — making land information easier to understand, verify and act upon.
             </p>
             
             <div className="flex flex-wrap gap-4">
               <Link 
                 href="/login" 
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#00c2a8] hover:bg-[#24c8b2] text-[#071A2B] font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#C6A75E] hover:bg-[#E8DCC8] text-[#071A2B] font-semibold rounded-lg transition-colors"
               >
                 Explore LandLens <ArrowRight size={18} />
               </Link>
               <Link 
                 href="/map" 
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent hover:bg-white/10 text-white font-semibold rounded-lg border-2 border-[#5fd8c5] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent hover:bg-white/10 text-white font-semibold rounded-lg border-2 border-[#E8DCC8] transition-colors"
               >
                 View GIS Demo
               </Link>
