@@ -64,47 +64,46 @@ const TRUST_ITEMS = [
 
 export default function PremiumLandingPage() {
   return (
-    <div className="min-h-screen bg-[#f5f8fa] text-[#10202f]">
+    <div className="min-h-screen bg-[#1F2A44]">
       
       {/* ============================================================
-          NAVIGATION
+          NAVIGATION - Deep Royal Navy
           ============================================================ */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#071A2B]/95 backdrop-blur-xl border-b border-[#18364a]">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#1F2A44]/95 backdrop-blur-xl border-b border-[#C6A75E]/30">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link href="/" className="font-heading font-bold text-xl text-white">
             LANDLENS
           </Link>
           
-          <div className="hidden md:flex items-center gap-8 text-sm">
-            <a href="#features" className="text-slate-600 hover:text-slate-900 transition-colors">Features</a>
-            <a href="#how-it-works" className="text-slate-600 hover:text-slate-900 transition-colors">How It Works</a>
-            <a href="#for-citizens" className="text-slate-600 hover:text-slate-900 transition-colors">For Citizens</a>
-            <a href="#for-government" className="text-slate-600 hover:text-slate-900 transition-colors">For Government</a>
-            <a href="#technology" className="text-slate-600 hover:text-slate-900 transition-colors">Technology</a>
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a href="#features" className="text-[#E8DCC8] hover:text-white transition-colors">Features</a>
+            <a href="#how-it-works" className="text-[#E8DCC8] hover:text-white transition-colors">How It Works</a>
+            <a href="#for-citizens" className="text-[#E8DCC8] hover:text-white transition-colors">For Citizens</a>
+            <a href="#for-government" className="text-[#E8DCC8] hover:text-white transition-colors">For Government</a>
+            <a href="#technology" className="text-[#E8DCC8] hover:text-white transition-colors">Technology</a>
           </div>
           
           <div className="flex items-center gap-3">
             <Link 
               href="/map" 
-              className="hidden sm:block text-sm text-slate-600 hover:text-slate-900 transition-colors px-4 py-2"
+              className="hidden sm:block text-sm text-[#E8DCC8] hover:text-white transition-colors px-4 py-2 font-medium"
             >
               Explore Map
             </Link>
             <Link 
               href="/login" 
-              aria-label="Log in to LandLens"
-              className="inline-flex min-w-[102px] items-center justify-center rounded-lg border border-slate-900 bg-slate-900 px-5 py-2.5 text-sm font-semibold !text-white shadow-sm transition-colors hover:bg-slate-700 hover:!text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 focus-visible:ring-offset-2"
+              className="inline-flex min-w-[102px] items-center justify-center rounded-lg bg-[#C6A75E] px-5 py-2.5 text-sm font-bold text-[#1F2A44] shadow-lg shadow-[#C6A75E]/30 transition-all hover:bg-[#d4b36e] hover:shadow-xl hover:shadow-[#C6A75E]/40"
             >
-              <span className="!text-white">Login</span>
+              Login
             </Link>
           </div>
         </div>
       </nav>
 
       {/* ============================================================
-          HERO SECTION
+          HERO SECTION - Deep Royal Navy with white/beige text
           ============================================================ */}
-      <section className="pt-32 pb-20 px-6 bg-[#071A2B] text-white">
+      <section className="pt-32 pb-20 px-6 bg-[#1F2A44]">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <motion.div
@@ -112,7 +111,7 @@ export default function PremiumLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="inline-block px-3 py-1 rounded-full bg-[#00c2a8]/15 text-[#5fd8c5] text-xs font-medium mb-6 uppercase tracking-wider">
+            <div className="inline-block px-3 py-1 rounded-full bg-[#C6A75E]/15 text-[#C6A75E] text-xs font-bold mb-6 uppercase tracking-wider border border-[#C6A75E]/30">
               GIS Intelligence for Land Governance
             </div>
             
@@ -124,39 +123,38 @@ export default function PremiumLandingPage() {
               One parcel. Every record.<br />One intelligent view.
             </p>
             
-            <p className="text-lg text-[#c5d6df] leading-relaxed mb-8 max-w-xl">
+            <p className="text-lg text-[#E8DCC8] leading-relaxed mb-8 max-w-xl">
               LandLens connects fragmented land records, maps, planning, registration and spatial data around a common parcel identity — making land information easier to understand, verify and act upon.
             </p>
             
             <div className="flex flex-wrap gap-4">
               <Link 
                 href="/login" 
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#00c2a8] hover:bg-[#24c8b2] text-[#071A2B] font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-[#C6A75E] hover:bg-[#d4b36e] text-[#1F2A44] font-bold rounded-lg transition-all shadow-lg shadow-[#C6A75E]/30 hover:shadow-xl hover:shadow-[#C6A75E]/40"
               >
                 Explore LandLens <ArrowRight size={18} />
               </Link>
               <Link 
                 href="/map" 
-                className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent hover:bg-white/10 text-white font-semibold rounded-lg border-2 border-[#5fd8c5] transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent hover:bg-white/10 text-white font-semibold rounded-lg border-2 border-[#C6A75E] transition-colors"
               >
                 View GIS Demo
               </Link>
             </div>
           </motion.div>
 
-          {/* Right Visual */}
+          {/* Right Visual - Beige card */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="relative"
           >
-            <div className="aspect-square bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl p-8 relative overflow-hidden">
+            <div className="aspect-square bg-[#E8DCC8] rounded-2xl p-8 relative overflow-hidden border-2 border-[#C6A75E]/20">
               {/* Stylized GIS Visual */}
-              <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 opacity-15">
                 <svg viewBox="0 0 400 400" className="w-full h-full">
-                  {/* Grid lines */}
-                  <g stroke="#1e293b" strokeWidth="0.5" fill="none">
+                  <g stroke="#1F2A44" strokeWidth="0.5" fill="none">
                     {[...Array(20)].map((_, i) => (
                       <g key={i}>
                         <line x1={i * 20} y1="0" x2={i * 20} y2="400" />
@@ -164,29 +162,27 @@ export default function PremiumLandingPage() {
                       </g>
                     ))}
                   </g>
-                  {/* Parcel boundaries */}
-                  <rect x="100" y="100" width="200" height="200" stroke="#0f172a" strokeWidth="2" fill="rgba(6, 182, 212, 0.1)" />
-                  <rect x="120" y="120" width="80" height="80" stroke="#0f172a" strokeWidth="1.5" fill="rgba(16, 185, 129, 0.15)" />
-                  <rect x="210" y="120" width="80" height="80" stroke="#0f172a" strokeWidth="1.5" fill="rgba(99, 102, 241, 0.15)" />
-                  {/* Roads */}
-                  <line x1="0" y1="200" x2="400" y2="200" stroke="#475569" strokeWidth="3" />
-                  <line x1="200" y1="0" x2="200" y2="400" stroke="#475569" strokeWidth="3" />
+                  <rect x="100" y="100" width="200" height="200" stroke="#1F2A44" strokeWidth="2" fill="rgba(198, 167, 94, 0.15)" />
+                  <rect x="120" y="120" width="80" height="80" stroke="#1F2A44" strokeWidth="1.5" fill="rgba(198, 167, 94, 0.2)" />
+                  <rect x="210" y="120" width="80" height="80" stroke="#1F2A44" strokeWidth="1.5" fill="rgba(198, 167, 94, 0.25)" />
+                  <line x1="0" y1="200" x2="400" y2="200" stroke="#1F2A44" strokeWidth="3" />
+                  <line x1="200" y1="0" x2="200" y2="400" stroke="#1F2A44" strokeWidth="3" />
                 </svg>
               </div>
               
-              {/* Central Focus */}
+              {/* Central Focus Card */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-white rounded-xl shadow-2xl p-6 max-w-xs">
-                  <div className="text-xs font-mono text-cyan-600 mb-2">CG-RPR-0001-0001</div>
-                  <div className="font-semibold text-slate-900 mb-3">Parcel P-00427</div>
+                <div className="bg-white rounded-xl shadow-2xl p-6 max-w-xs border-2 border-[#C6A75E]/30">
+                  <div className="text-xs font-mono text-[#C6A75E] font-semibold mb-2">CG-RPR-0001-0001</div>
+                  <div className="font-bold text-[#1F2A44] mb-3 text-lg">Parcel P-00427</div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-600">Records</span>
-                      <span className="font-mono text-emerald-600">✓ 8 Connected</span>
+                      <span className="text-[#2A3655]">Records</span>
+                      <span className="font-mono text-[#C6A75E] font-bold">✓ 8 Connected</span>
                     </div>
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-600">Status</span>
-                      <span className="font-mono text-slate-900">Verified</span>
+                      <span className="text-[#2A3655]">Status</span>
+                      <span className="font-mono text-[#1F2A44] font-semibold">Verified</span>
                     </div>
                   </div>
                 </div>
@@ -197,22 +193,22 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          SIMPLE PROJECT INTRODUCTION
+          PROJECT INTRODUCTION - Warm Beige section
           ============================================================ */}
-      <section className="py-20 px-6 bg-slate-50">
+      <section className="py-20 px-6 bg-[#E8DCC8]">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-6">
+          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-[#1F2A44] mb-6">
             Land Governance, Simplified.
           </h2>
-          <p className="text-lg text-slate-600 leading-relaxed mb-12 max-w-2xl mx-auto">
+          <p className="text-lg text-[#2A3655] leading-relaxed mb-12 max-w-2xl mx-auto">
             Land information is often distributed across different records, departments and systems. LandLens brings these datasets together around each parcel, giving citizens and government officials a clearer and more connected view of the land.
           </p>
           
           {/* Simple Flow */}
           <div className="grid md:grid-cols-3 gap-8 items-center max-w-3xl mx-auto">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <div className="text-sm font-semibold text-slate-500 mb-3 uppercase tracking-wider">Fragmented Data</div>
-              <div className="space-y-2 text-xs text-slate-600">
+            <div className="bg-white rounded-xl p-6 shadow-sm border-2 border-[#C6A75E]/20">
+              <div className="text-sm font-bold text-[#2A3655] mb-3 uppercase tracking-wider">Fragmented Data</div>
+              <div className="space-y-2 text-xs text-[#2A3655] font-medium">
                 <div>RoR</div>
                 <div>Registration</div>
                 <div>Planning</div>
@@ -224,14 +220,14 @@ export default function PremiumLandingPage() {
             </div>
             
             <div className="flex flex-col items-center">
-              <ArrowRight size={32} className="text-slate-400 mb-2 hidden md:block" />
-              <div className="font-heading font-bold text-xl text-slate-900">LANDLENS</div>
+              <ArrowRight size={32} className="text-[#C6A75E] mb-2 hidden md:block" />
+              <div className="font-heading font-bold text-xl text-[#1F2A44]">LANDLENS</div>
             </div>
             
-            <div className="bg-slate-900 text-white rounded-xl p-6 shadow-lg">
-              <div className="text-sm font-semibold text-slate-300 mb-3 uppercase tracking-wider">One Parcel View</div>
+            <div className="bg-[#1F2A44] text-white rounded-xl p-6 shadow-lg border-2 border-[#C6A75E]/40">
+              <div className="text-sm font-bold text-[#E8DCC8] mb-3 uppercase tracking-wider">One Parcel View</div>
               <div className="flex items-center justify-center h-16">
-                <Map size={40} className="text-cyan-400" />
+                <Map size={40} className="text-[#C6A75E]" />
               </div>
             </div>
           </div>
@@ -239,12 +235,12 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          FEATURES SECTION
+          FEATURES SECTION - Deep Royal Navy
           ============================================================ */}
-      <section id="features" className="py-20 px-6">
+      <section id="features" className="py-20 px-6 bg-[#1F2A44]">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-4">
+            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-white mb-4">
               Everything You Need to Understand a Parcel
             </h2>
           </div>
@@ -257,16 +253,16 @@ export default function PremiumLandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
-                className={`bg-white rounded-xl p-8 border-2 border-slate-200 hover:border-slate-900 transition-all ${i === 0 ? 'md:col-span-2 lg:col-span-1' : ''}`}
+                className="bg-[#E8DCC8] rounded-xl p-8 border-2 border-[#C6A75E]/30 hover:border-[#C6A75E] hover:shadow-xl hover:shadow-[#C6A75E]/20 transition-all"
               >
                 <div className="flex items-start gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-lg bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-[#1F2A44] text-[#C6A75E] flex items-center justify-center flex-shrink-0">
                     {feature.icon}
                   </div>
-                  <div className="text-4xl font-bold text-slate-200">{feature.num}</div>
+                  <div className="text-4xl font-bold text-[#C6A75E]/20">{feature.num}</div>
                 </div>
-                <h3 className="font-heading font-bold text-xl text-slate-900 mb-3">{feature.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{feature.desc}</p>
+                <h3 className="font-heading font-bold text-xl text-[#1F2A44] mb-3">{feature.title}</h3>
+                <p className="text-[#2A3655] leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -274,38 +270,38 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          LAND TRUTH ENGINE
+          LAND TRUTH ENGINE - Warm Beige
           ============================================================ */}
-      <section className="py-20 px-6 bg-slate-900 text-white">
+      <section className="py-20 px-6 bg-[#E8DCC8]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-4xl lg:text-5xl mb-6">
+            <h2 className="font-heading font-bold text-4xl lg:text-5xl text-[#1F2A44] mb-6">
               Don&apos;t Just Store the Data.<br />Understand It.
             </h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-[#2A3655] max-w-3xl mx-auto">
               LandLens compares information from multiple sources to identify where records agree, where they differ and where human verification may be required.
             </p>
           </div>
           
-          <div className="bg-white/5 backdrop-blur rounded-2xl p-8 lg:p-12 border border-white/10">
+          <div className="bg-white backdrop-blur rounded-2xl p-8 lg:p-12 border-2 border-[#C6A75E]/30 shadow-xl">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
                 <div className="flex flex-wrap gap-3 mb-6">
                   {['RoR', 'Registration', 'Zoning', 'Master Plan', 'Restrictions'].map(item => (
-                    <span key={item} className="px-3 py-1.5 bg-white/10 rounded-lg text-sm">{item}</span>
+                    <span key={item} className="px-3 py-1.5 bg-[#E8DCC8] border border-[#C6A75E]/40 rounded-lg text-sm font-semibold text-[#1F2A44]">{item}</span>
                   ))}
                 </div>
                 <div className="flex items-center gap-3 mb-6">
-                  <ArrowRight size={24} className="text-cyan-400" />
-                  <span className="font-semibold text-lg">Land Truth Engine</span>
+                  <ArrowRight size={24} className="text-[#C6A75E]" />
+                  <span className="font-bold text-lg text-[#1F2A44]">Land Truth Engine</span>
                 </div>
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6">
-                  <div className="font-semibold text-red-400 mb-2">AREA MISMATCH</div>
-                  <div className="space-y-1 text-sm mb-4">
-                    <div>RoR: <span className="font-mono">2.40 acres</span></div>
-                    <div>Registration: <span className="font-mono">2.10 acres</span></div>
+                <div className="bg-red-50 border-2 border-red-300 rounded-xl p-6">
+                  <div className="font-bold text-red-700 mb-2">AREA MISMATCH</div>
+                  <div className="space-y-1 text-sm mb-4 text-[#2A3655]">
+                    <div>RoR: <span className="font-mono font-bold">2.40 acres</span></div>
+                    <div>Registration: <span className="font-mono font-bold">2.10 acres</span></div>
                   </div>
-                  <div className="inline-block px-3 py-1 bg-red-500/20 rounded text-xs font-semibold uppercase">
+                  <div className="inline-block px-3 py-1 bg-red-600 text-white rounded text-xs font-bold uppercase">
                     Review Required
                   </div>
                 </div>
@@ -313,24 +309,24 @@ export default function PremiumLandingPage() {
               
               <div className="space-y-6">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 size={20} className="text-emerald-400 mt-1 flex-shrink-0" />
+                  <CheckCircle2 size={20} className="text-[#C6A75E] mt-1 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold mb-1">Evidence</div>
-                    <div className="text-sm text-slate-300">Every finding shows the exact datasets compared and values found.</div>
+                    <div className="font-bold text-[#1F2A44] mb-1">Evidence</div>
+                    <div className="text-sm text-[#2A3655]">Every finding shows the exact datasets compared and values found.</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 size={20} className="text-emerald-400 mt-1 flex-shrink-0" />
+                  <CheckCircle2 size={20} className="text-[#C6A75E] mt-1 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold mb-1">Datasets Compared</div>
-                    <div className="text-sm text-slate-300">Transparent cross-checking across all available records.</div>
+                    <div className="font-bold text-[#1F2A44] mb-1">Datasets Compared</div>
+                    <div className="text-sm text-[#2A3655]">Transparent cross-checking across all available records.</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 size={20} className="text-emerald-400 mt-1 flex-shrink-0" />
+                  <CheckCircle2 size={20} className="text-[#C6A75E] mt-1 flex-shrink-0" />
                   <div>
-                    <div className="font-semibold mb-1">Recommended Action</div>
-                    <div className="text-sm text-slate-300">Clear next steps for verification and resolution.</div>
+                    <div className="font-bold text-[#1F2A44] mb-1">Recommended Action</div>
+                    <div className="text-sm text-[#2A3655]">Clear next steps for verification and resolution.</div>
                   </div>
                 </div>
               </div>
@@ -340,12 +336,12 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          HOW IT WORKS
+          HOW IT WORKS - Deep Royal Navy
           ============================================================ */}
-      <section id="how-it-works" className="py-20 px-6">
+      <section id="how-it-works" className="py-20 px-6 bg-[#1F2A44]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-4">
+            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-white mb-4">
               How It Works
             </h2>
           </div>
@@ -353,11 +349,11 @@ export default function PremiumLandingPage() {
           <div className="grid md:grid-cols-4 gap-8">
             {HOW_IT_WORKS.map((step, i) => (
               <div key={step.num} className="relative">
-                <div className="text-6xl font-bold text-slate-100 mb-4">{step.num}</div>
-                <h3 className="font-heading font-bold text-xl text-slate-900 mb-2">{step.title}</h3>
-                <p className="text-slate-600 leading-relaxed">{step.desc}</p>
+                <div className="text-6xl font-bold text-[#C6A75E]/20 mb-4">{step.num}</div>
+                <h3 className="font-heading font-bold text-xl text-white mb-2">{step.title}</h3>
+                <p className="text-[#E8DCC8] leading-relaxed">{step.desc}</p>
                 {i < HOW_IT_WORKS.length - 1 && (
-                  <ArrowRight className="hidden md:block absolute top-8 -right-4 text-slate-300" size={24} />
+                  <ArrowRight className="hidden md:block absolute top-8 -right-4 text-[#C6A75E]/40" size={24} />
                 )}
               </div>
             ))}
@@ -366,16 +362,16 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          WHO LANDLENS IS FOR
+          WHO LANDLENS IS FOR - Warm Beige
           ============================================================ */}
-      <section className="py-20 px-6 bg-slate-50">
+      <section className="py-20 px-6 bg-[#E8DCC8]">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16">
             {/* For Citizens */}
-            <div id="for-citizens" className="bg-white rounded-2xl p-10 border-2 border-slate-200">
-              <Users size={40} className="text-emerald-600 mb-6" />
-              <h2 className="font-heading font-bold text-3xl text-slate-900 mb-4">For Citizens</h2>
-              <p className="text-lg text-slate-600 mb-8">Find and understand land information.</p>
+            <div id="for-citizens" className="bg-white rounded-2xl p-10 border-2 border-[#C6A75E]/30">
+              <Users size={40} className="text-[#C6A75E] mb-6" />
+              <h2 className="font-heading font-bold text-3xl text-[#1F2A44] mb-4">For Citizens</h2>
+              <p className="text-lg text-[#2A3655] mb-8">Find and understand land information.</p>
               
               <ul className="space-y-3 mb-8">
                 {[
@@ -389,25 +385,25 @@ export default function PremiumLandingPage() {
                   'Ask Parcel AI'
                 ].map(item => (
                   <li key={item} className="flex items-center gap-3">
-                    <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
-                    <span className="text-slate-700">{item}</span>
+                    <CheckCircle2 size={18} className="text-[#C6A75E] flex-shrink-0" />
+                    <span className="text-[#2A3655] font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
               
               <Link 
                 href="/login" 
-                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#C6A75E] hover:bg-[#d4b36e] text-[#1F2A44] font-bold rounded-lg transition-all shadow-lg shadow-[#C6A75E]/30"
               >
                 Explore Citizen Experience <ArrowRight size={18} />
               </Link>
             </div>
 
             {/* For Government */}
-            <div id="for-government" className="bg-slate-900 text-white rounded-2xl p-10">
-              <Building2 size={40} className="text-cyan-400 mb-6" />
+            <div id="for-government" className="bg-[#1F2A44] text-white rounded-2xl p-10 border-2 border-[#C6A75E]/40">
+              <Building2 size={40} className="text-[#C6A75E] mb-6" />
               <h2 className="font-heading font-bold text-3xl mb-4">For Government</h2>
-              <p className="text-lg text-slate-300 mb-8">Turn fragmented land data into actionable intelligence.</p>
+              <p className="text-lg text-[#E8DCC8] mb-8">Turn fragmented land data into actionable intelligence.</p>
               
               <ul className="space-y-3 mb-8">
                 {[
@@ -421,15 +417,15 @@ export default function PremiumLandingPage() {
                   'Audit trails'
                 ].map(item => (
                   <li key={item} className="flex items-center gap-3">
-                    <CheckCircle2 size={18} className="text-cyan-400 flex-shrink-0" />
-                    <span className="text-slate-200">{item}</span>
+                    <CheckCircle2 size={18} className="text-[#C6A75E] flex-shrink-0" />
+                    <span className="text-[#E8DCC8] font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
               
               <Link 
                 href="/login" 
-                className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#C6A75E] hover:bg-[#d4b36e] text-[#1F2A44] font-bold rounded-lg transition-all shadow-lg shadow-[#C6A75E]/30"
               >
                 Explore Government Platform <ArrowRight size={18} />
               </Link>
@@ -439,12 +435,12 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          TECHNOLOGY
+          TECHNOLOGY - Deep Royal Navy
           ============================================================ */}
-      <section id="technology" className="py-20 px-6">
+      <section id="technology" className="py-20 px-6 bg-[#1F2A44]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-6">
+            <h2 className="font-heading font-bold text-3xl lg:text-4xl text-white mb-6">
               Built to Connect
             </h2>
           </div>
@@ -466,35 +462,35 @@ export default function PremiumLandingPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-xl p-4 border-2 border-slate-200 flex items-center gap-4"
+                className="bg-[#E8DCC8] rounded-xl p-4 border-2 border-[#C6A75E]/30 flex items-center gap-4 hover:border-[#C6A75E] transition-all"
               >
-                <Database size={20} className="text-slate-400" />
-                <span className="font-medium text-slate-900">{layer}</span>
+                <Database size={20} className="text-[#C6A75E]" />
+                <span className="font-bold text-[#1F2A44]">{layer}</span>
               </motion.div>
             ))}
           </div>
           
-          <p className="text-center text-sm text-slate-600 mt-12 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-center text-sm text-[#E8DCC8] mt-12 leading-relaxed max-w-2xl mx-auto">
             LandLens is designed around interoperable APIs and a common parcel-centric data model, allowing different datasets and state-specific schemas to be connected without forcing every department into the same source system.
           </p>
         </div>
       </section>
 
       {/* ============================================================
-          TRUST / SECURITY
+          TRUST / SECURITY - Warm Beige
           ============================================================ */}
-      <section className="py-20 px-6 bg-slate-50">
+      <section className="py-20 px-6 bg-[#E8DCC8]">
         <div className="max-w-4xl mx-auto text-center">
-          <Shield size={48} className="text-slate-900 mx-auto mb-6" />
-          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-slate-900 mb-6">
+          <Shield size={48} className="text-[#C6A75E] mx-auto mb-6" />
+          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-[#1F2A44] mb-6">
             Built for Responsible Land Governance
           </h2>
           
           <div className="grid md:grid-cols-3 gap-6 mt-12">
             {TRUST_ITEMS.map(item => (
-              <div key={item} className="bg-white rounded-xl p-6 border border-slate-200">
-                <Lock size={24} className="text-slate-400 mx-auto mb-3" />
-                <div className="font-semibold text-slate-900">{item}</div>
+              <div key={item} className="bg-white rounded-xl p-6 border-2 border-[#C6A75E]/30">
+                <Lock size={24} className="text-[#C6A75E] mx-auto mb-3" />
+                <div className="font-bold text-[#1F2A44]">{item}</div>
               </div>
             ))}
           </div>
@@ -502,27 +498,27 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          FINAL CTA
+          FINAL CTA - Deep Royal Navy
           ============================================================ */}
-      <section className="py-32 px-6 bg-slate-900 text-white">
+      <section className="py-32 px-6 bg-[#1F2A44]">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-heading font-bold text-4xl lg:text-6xl mb-8">
+          <h2 className="font-heading font-bold text-4xl lg:text-6xl text-white mb-8">
             See Every Parcel<br />With More Clarity.
           </h2>
-          <p className="text-xl text-slate-300 mb-12 max-w-2xl mx-auto">
+          <p className="text-xl text-[#E8DCC8] mb-12 max-w-2xl mx-auto">
             Explore LandLens and experience a more connected way to understand land information.
           </p>
           
           <div className="flex flex-wrap justify-center gap-4">
             <Link 
               href="/login" 
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-slate-100 !text-slate-900 font-bold text-lg rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-[#C6A75E] hover:bg-[#d4b36e] text-[#1F2A44] font-bold text-lg rounded-lg transition-all shadow-xl shadow-[#C6A75E]/30"
             >
-              <span className="!text-slate-900">Explore LandLens</span> <ArrowRight size={20} aria-hidden="true" />
+              Explore LandLens <ArrowRight size={20} />
             </Link>
             <Link 
               href="/login" 
-              className="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/10 text-white font-bold text-lg rounded-lg border-2 border-white transition-colors"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-transparent hover:bg-white/10 text-white font-bold text-lg rounded-lg border-2 border-[#C6A75E] transition-colors"
             >
               Login
             </Link>
@@ -531,44 +527,44 @@ export default function PremiumLandingPage() {
       </section>
 
       {/* ============================================================
-          FOOTER
+          FOOTER - Warm Beige
           ============================================================ */}
-      <footer className="bg-white border-t border-slate-200 py-12 px-6">
+      <footer className="bg-[#E8DCC8] border-t-2 border-[#C6A75E]/30 py-12 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div>
-              <div className="font-heading font-bold text-xl text-slate-900 mb-4">LANDLENS</div>
-              <p className="text-sm text-slate-600">The Intelligence Layer for Land Governance</p>
+              <div className="font-heading font-bold text-xl text-[#1F2A44] mb-4">LANDLENS</div>
+              <p className="text-sm text-[#2A3655]">The Intelligence Layer for Land Governance</p>
             </div>
             
             <div>
-              <div className="font-semibold text-slate-900 mb-3">Platform</div>
-              <ul className="space-y-2 text-sm text-slate-600">
-                <li><a href="#features" className="hover:text-slate-900">Features</a></li>
-                <li><a href="#how-it-works" className="hover:text-slate-900">How It Works</a></li>
-                <li><a href="#technology" className="hover:text-slate-900">Technology</a></li>
-                <li><Link href="/login" className="hover:text-slate-900">Login</Link></li>
+              <div className="font-bold text-[#1F2A44] mb-3">Platform</div>
+              <ul className="space-y-2 text-sm text-[#2A3655] font-medium">
+                <li><a href="#features" className="hover:text-[#1F2A44]">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-[#1F2A44]">How It Works</a></li>
+                <li><a href="#technology" className="hover:text-[#1F2A44]">Technology</a></li>
+                <li><Link href="/login" className="hover:text-[#1F2A44]">Login</Link></li>
               </ul>
             </div>
             
             <div>
-              <div className="font-semibold text-slate-900 mb-3">For</div>
-              <ul className="space-y-2 text-sm text-slate-600">
-                <li><a href="#for-citizens" className="hover:text-slate-900">Citizens</a></li>
-                <li><a href="#for-government" className="hover:text-slate-900">Government</a></li>
+              <div className="font-bold text-[#1F2A44] mb-3">For</div>
+              <ul className="space-y-2 text-sm text-[#2A3655] font-medium">
+                <li><a href="#for-citizens" className="hover:text-[#1F2A44]">Citizens</a></li>
+                <li><a href="#for-government" className="hover:text-[#1F2A44]">Government</a></li>
               </ul>
             </div>
             
             <div>
-              <div className="font-semibold text-slate-900 mb-3">Product</div>
-              <ul className="space-y-2 text-sm text-slate-600">
-                <li><Link href="/map" className="hover:text-slate-900">Explore Map</Link></li>
+              <div className="font-bold text-[#1F2A44] mb-3">Product</div>
+              <ul className="space-y-2 text-sm text-[#2A3655] font-medium">
+                <li><Link href="/map" className="hover:text-[#1F2A44]">Explore Map</Link></li>
               </ul>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-slate-200">
-            <p className="text-xs text-slate-500 text-center">
+          <div className="pt-8 border-t-2 border-[#C6A75E]/20">
+            <p className="text-xs text-[#2A3655] text-center font-medium">
               Prototype / Demonstration Platform • Synthetic Demonstration Data
             </p>
           </div>

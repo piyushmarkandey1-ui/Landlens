@@ -84,15 +84,25 @@
   --bg-hover:  var(--brand-gold);
 
   /* ── Borders ── */
-  --border:        rgba(198,167,94,0.48);
-  --border-medium: var(--brand-gold);
+  --border:        rgba(198,167,94,0.35);
+  --border-medium: rgba(198,167,94,0.6);
   --border-accent: var(--brand-gold);
 
-  /* ── Text ── */
+  /* ── Text on Navy Backgrounds ── */
+  --text-on-navy-heading:   #FFFFFF;
+  --text-on-navy-body:      rgba(232,220,200,0.9);
+  --text-on-navy-muted:     rgba(232,220,200,0.65);
+
+  /* ── Text on Beige Backgrounds ── */
+  --text-on-beige-heading:  var(--brand-navy);
+  --text-on-beige-body:     #2A3655;
+  --text-on-beige-muted:    rgba(31,42,68,0.7);
+
+  /* ── Legacy text variables (for compatibility) ── */
   --text-primary:   var(--brand-navy);
-  --text-secondary: var(--brand-navy);
-  --text-tertiary:  rgba(232,220,200,0.85);
-  --text-muted:     rgba(232,220,200,0.7);
+  --text-secondary: #2A3655;
+  --text-tertiary:  rgba(232,220,200,0.9);
+  --text-muted:     rgba(232,220,200,0.65);
   --text-disabled:  rgba(232,220,200,0.45);
 
   /* ── Shadows ── */
@@ -326,26 +336,36 @@ button {
 .btn-primary {
   background: var(--brand-gold);
   color: var(--brand-navy);
-  box-shadow: 0 4px 14px rgba(198,167,94,0.28);
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(198,167,94,0.35);
   border-color: var(--brand-gold);
 }
-.btn-primary:hover { box-shadow: var(--shadow-indigo-lg); transform: translateY(-1px); }
+.btn-primary:hover { 
+  box-shadow: 0 8px 24px rgba(198,167,94,0.45); 
+  transform: translateY(-1px); 
+  background: #d4b36e;
+}
 .btn-primary:active { transform: scale(0.98); }
 
 .btn-secondary {
-  background: var(--brand-beige);
-  color: var(--brand-navy);
-  border-color: var(--brand-gold);
+  background: transparent;
+  color: var(--brand-gold);
+  border: 1px solid var(--brand-gold);
   box-shadow: var(--shadow-xs);
+  font-weight: 600;
 }
-.btn-secondary:hover { background: var(--c-slate-50); border-color: var(--c-slate-400); box-shadow: var(--shadow-sm); }
+.btn-secondary:hover { 
+  background: rgba(198,167,94,0.08); 
+  border-color: var(--brand-gold); 
+  box-shadow: 0 0 0 3px rgba(198,167,94,0.12); 
+}
 
 .btn-ghost {
   background: transparent;
-  color: var(--text-tertiary);
+  color: var(--brand-gold);
   border-color: transparent;
 }
-.btn-ghost:hover { background: var(--c-slate-100); color: var(--text-secondary); }
+.btn-ghost:hover { background: rgba(198,167,94,0.1); color: var(--brand-gold); border-color: rgba(198,167,94,0.3); }
 
 .btn-danger {
   background: var(--c-red-50);
@@ -500,18 +520,30 @@ button {
 
 /* ─────────────────────────────────────────────────────────────
    STRICT BRAND COLOR GOVERNANCE
-   Legacy utility classes resolve to the three LandLens brand tones.
+   All UI elements map to the 3-color editorial system
 ───────────────────────────────────────────────────────────── */
 .bg-white, .bg-slate-50, .bg-gray-50, .bg-zinc-50 { background-color: var(--brand-beige) !important; }
 .bg-slate-900, .bg-gray-900, .bg-zinc-900, .bg-black { background-color: var(--brand-navy) !important; }
+
+/* Text colors on navy backgrounds */
+.text-white { color: #FFFFFF !important; }
+.text-slate-300, .text-slate-200 { color: rgba(232,220,200,0.9) !important; }
+.text-slate-400 { color: rgba(232,220,200,0.65) !important; }
+
+/* Text colors on beige backgrounds */  
 .text-slate-900, .text-gray-900, .text-zinc-900, .text-slate-800, .text-gray-800 { color: var(--brand-navy) !important; }
-.text-slate-600, .text-gray-600, .text-slate-500, .text-gray-500 { color: rgba(31,42,68,0.78) !important; }
-.text-white { color: #fff !important; }
-.border-slate-200, .border-gray-200, .border-slate-300, .border-gray-300 { border-color: var(--brand-gold) !important; }
-.bg-cyan-500, .bg-cyan-600, .bg-emerald-600, .bg-emerald-700 { background-color: var(--brand-gold) !important; }
-.text-cyan-400, .text-cyan-500, .text-cyan-600, .text-emerald-400, .text-emerald-600 { color: var(--brand-gold) !important; }
-.hover\\:bg-cyan-600:hover, .hover\\:bg-emerald-700:hover, .hover\\:bg-slate-700:hover { background-color: var(--brand-gold) !important; }
-.focus-visible\\:ring-cyan-500:focus-visible, .focus-visible\\:ring-cyan-500:focus-visible { --tw-ring-color: var(--brand-gold) !important; }
+.text-slate-700, .text-gray-700 { color: #2A3655 !important; }
+.text-slate-600, .text-gray-600, .text-slate-500, .text-gray-500 { color: rgba(31,42,68,0.75) !important; }
+
+/* Borders always use gold */
+.border-slate-200, .border-gray-200, .border-slate-300, .border-gray-300, .border-white\\/10 { border-color: rgba(198,167,94,0.35) !important; }
+.border-slate-400 { border-color: rgba(198,167,94,0.5) !important; }
+
+/* All accent colors map to gold */
+.bg-cyan-500, .bg-cyan-600, .bg-emerald-600, .bg-emerald-700, .bg-indigo-600, .bg-blue-600 { background-color: var(--brand-gold) !important; }
+.text-cyan-400, .text-cyan-500, .text-cyan-600, .text-emerald-400, .text-emerald-600, .text-indigo-600, .text-blue-600 { color: var(--brand-gold) !important; }
+.hover\\:bg-cyan-600:hover, .hover\\:bg-emerald-700:hover, .hover\\:bg-slate-700:hover, .hover\\:bg-indigo-700:hover, .hover\\:bg-blue-700:hover { background-color: #d4b36e !important; }
+.focus-visible\\:ring-cyan-500:focus-visible, .focus-visible\\:ring-indigo-500:focus-visible { --tw-ring-color: var(--brand-gold) !important; }
 
 .glass-card { background: color-mix(in srgb, var(--brand-beige) 92%, transparent); border-color: var(--brand-gold); }
 .nav-item:hover { background: color-mix(in srgb, var(--brand-gold) 18%, transparent); }
