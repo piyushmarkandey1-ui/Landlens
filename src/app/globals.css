@@ -164,6 +164,43 @@ button {
 ::-webkit-scrollbar-thumb:hover { background: var(--c-slate-300); }
 
 /* ─────────────────────────────────────────────────────────────
+   PREMIUM LANDING PALETTE
+   Keeps every landing section on the same navy, beige, and gold system.
+───────────────────────────────────────────────────────────── */
+.landlens-premium {
+  --premium-navy: #071A2B;
+  --premium-navy-soft: #102C3D;
+  --premium-beige: #F4EBDD;
+  --premium-beige-deep: #E8DCC8;
+  --premium-gold: #C6A75E;
+  --premium-teal: #00B8A9;
+  --premium-ink: #172B3A;
+  --premium-muted: #526575;
+}
+.landlens-premium .bg-slate-50 { background-color: var(--premium-beige) !important; }
+.landlens-premium .bg-white { background-color: var(--premium-beige-deep) !important; }
+.landlens-premium .bg-slate-900 { background-color: var(--premium-navy) !important; }
+.landlens-premium .bg-slate-100 { background-color: #efe5d4 !important; }
+.landlens-premium .text-slate-900 { color: var(--premium-ink) !important; }
+.landlens-premium .text-slate-700,
+.landlens-premium .text-slate-600 { color: var(--premium-muted) !important; }
+.landlens-premium .text-slate-500 { color: #718292 !important; }
+.landlens-premium .text-slate-400,
+.landlens-premium .text-slate-300 { color: #9aabb5 !important; }
+.landlens-premium .text-slate-200,
+.landlens-premium .text-slate-100 { color: #d9cdb9 !important; }
+.landlens-premium .text-cyan-400,
+.landlens-premium .text-cyan-600 { color: var(--premium-teal) !important; }
+.landlens-premium .text-emerald-400,
+.landlens-premium .text-emerald-600 { color: var(--premium-gold) !important; }
+.landlens-premium .border-slate-200 { border-color: rgba(198,167,94,.42) !important; }
+.landlens-premium .border-slate-900 { border-color: var(--premium-navy) !important; }
+.landlens-premium .hover\\:border-slate-900:hover { border-color: var(--premium-gold) !important; }
+.landlens-premium .bg-emerald-600 { background-color: var(--premium-teal) !important; }
+.landlens-premium .hover\\:bg-emerald-700:hover { background-color: #008f84 !important; }
+.landlens-premium .bg-gradient-to-br { background-image: linear-gradient(135deg, #e7dcc8, #d7c7aa) !important; }
+
+/* ─────────────────────────────────────────────────────────────
    TYPOGRAPHY
 ───────────────────────────────────────────────────────────── */
 .font-display, .font-heading { font-family: var(--font-display); letter-spacing: -0.02em; }
@@ -593,7 +630,7 @@ button {
 
 /* ─────────────────────────────────────────────────────────────
    PAGE LAYOUT UTILITIES
-───────────────────────────────────────────────────────────── */
+──────────────────────────��────────────────────────────────── */
 .page-container { padding: 24px 28px; max-width: 1200px; margin: 0 auto; }
 .page-header    { margin-bottom: 24px; }
 .section-gap    { margin-top: 20px; }

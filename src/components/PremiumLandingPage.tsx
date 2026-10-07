@@ -64,7 +64,7 @@ const TRUST_ITEMS = [
 
 export default function PremiumLandingPage() {
   return (
-    <div className="min-h-screen bg-[#F4EBDD] text-[#1F2A44]">
+    <div className="landlens-premium min-h-screen bg-[#F4EBDD] text-[#1F2A44]">
       
       {/* ============================================================
           NAVIGATION
