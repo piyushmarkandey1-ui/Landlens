@@ -3,8 +3,8 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   LANDLENS  ·  Minimal Professional Design System
-   White surfaces · Indigo brand · Clean hierarchy
+   LANDLENS · Strict Royal Editorial Design System
+   Navy foundation · Warm beige surfaces · Soft gold actions
 ───────────────────────────────────────────────────────────── */
 
 :root {
@@ -80,8 +80,8 @@
   /* ── Surfaces ── */
   --bg-page:   var(--brand-navy);
   --bg-card:   var(--brand-beige);
-  --bg-inset:  #dfceb0;
-  --bg-hover:  #f0e7d8;
+  --bg-inset:  var(--brand-beige);
+  --bg-hover:  var(--brand-gold);
 
   /* ── Borders ── */
   --border:        rgba(198,167,94,0.48);
@@ -439,7 +439,7 @@ button {
 .data-table tbody tr { transition: background var(--duration-fast); }
 .data-table tbody tr:hover { background: var(--c-indigo-50); cursor: pointer; }
 
-/* ────────────────────────���──────���──────��──────────────────────
+/* ────────────────────────���──────���──────��────���─────────────────
    PROGRESS / SCORE BAR
 ───────────────────────────────────────────────────────────── */
 .score-bar { height: 5px; border-radius: var(--radius-full); background: var(--c-slate-200); overflow: hidden; }
@@ -497,6 +497,28 @@ button {
 }
 .icon-box-sm  { width: 30px; height: 30px; }
 .icon-box-md  { width: 36px; height: 36px; border-radius: var(--radius); }
+
+/* ─────────────────────────────────────────────────────────────
+   STRICT BRAND COLOR GOVERNANCE
+   Legacy utility classes resolve to the three LandLens brand tones.
+───────────────────────────────────────────────────────────── */
+.bg-white, .bg-slate-50, .bg-gray-50, .bg-zinc-50 { background-color: var(--brand-beige) !important; }
+.bg-slate-900, .bg-gray-900, .bg-zinc-900, .bg-black { background-color: var(--brand-navy) !important; }
+.text-slate-900, .text-gray-900, .text-zinc-900, .text-slate-800, .text-gray-800 { color: var(--brand-navy) !important; }
+.text-slate-600, .text-gray-600, .text-slate-500, .text-gray-500 { color: rgba(31,42,68,0.78) !important; }
+.text-white { color: #fff !important; }
+.border-slate-200, .border-gray-200, .border-slate-300, .border-gray-300 { border-color: var(--brand-gold) !important; }
+.bg-cyan-500, .bg-cyan-600, .bg-emerald-600, .bg-emerald-700 { background-color: var(--brand-gold) !important; }
+.text-cyan-400, .text-cyan-500, .text-cyan-600, .text-emerald-400, .text-emerald-600 { color: var(--brand-gold) !important; }
+.hover\\:bg-cyan-600:hover, .hover\\:bg-emerald-700:hover, .hover\\:bg-slate-700:hover { background-color: var(--brand-gold) !important; }
+.focus-visible\\:ring-cyan-500:focus-visible, .focus-visible\\:ring-cyan-500:focus-visible { --tw-ring-color: var(--brand-gold) !important; }
+
+.glass-card { background: color-mix(in srgb, var(--brand-beige) 92%, transparent); border-color: var(--brand-gold); }
+.nav-item:hover { background: color-mix(in srgb, var(--brand-gold) 18%, transparent); }
+.nav-item.active { color: var(--brand-navy); background: var(--brand-gold); border-color: var(--brand-gold); }
+.btn-primary:hover { box-shadow: 0 8px 24px rgba(198,167,94,0.28); }
+.btn-secondary:hover { background: var(--brand-gold); border-color: var(--brand-gold); }
+.form-input:focus { border-color: var(--brand-gold); box-shadow: 0 0 0 3px rgba(198,167,94,0.22); }
 .icon-box-lg  { width: 44px; height: 44px; border-radius: var(--radius-lg); }
 
 .icon-indigo  { background: var(--c-indigo-50); color: var(--c-indigo-600); }
