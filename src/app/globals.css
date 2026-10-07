@@ -8,15 +8,20 @@
 ───────────────────────────────────────────────────────────── */
 
 :root {
-  /* Brand */
-  --c-indigo-50:  #e8fbf7;
-  --c-indigo-100: #c7f4ec;
-  --c-indigo-200: #94e8da;
-  --c-indigo-300: #5fd8c5;
-  --c-indigo-400: #24c8b2;
-  --c-indigo-500: #00c2a8;
-  --c-indigo-600: #009f8b;
-  --c-indigo-700: #007c6d;
+  /* LandLens brand palette: deep royal navy, warm beige, soft gold */
+  --brand-navy: #1F2A44;
+  --brand-beige: #E8DCC8;
+  --brand-gold: #C6A75E;
+
+  /* Legacy aliases retained for component compatibility */
+  --c-indigo-50:  #f4eee4;
+  --c-indigo-100: #eadfcf;
+  --c-indigo-200: #dfceb0;
+  --c-indigo-300: #d4bd91;
+  --c-indigo-400: #c6a75e;
+  --c-indigo-500: #c6a75e;
+  --c-indigo-600: #a88943;
+  --c-indigo-700: #8b6e31;
 
   /* Neutrals */
   --c-gray-50:  #f9fafb;
@@ -73,22 +78,22 @@
   --c-cyan-900:   #164e63;
 
   /* ── Surfaces ── */
-  --bg-page:   #f5f8fa;
-  --bg-card:   #ffffff;
-  --bg-inset:  #edf4f5;
-  --bg-hover:  #f5fbfa;
+  --bg-page:   var(--brand-navy);
+  --bg-card:   var(--brand-beige);
+  --bg-inset:  #dfceb0;
+  --bg-hover:  #f0e7d8;
 
   /* ── Borders ── */
-  --border:        #dce5ea;
-  --border-medium: #c4d4da;
-  --border-accent: rgba(0,194,168,0.3);
+  --border:        rgba(198,167,94,0.48);
+  --border-medium: var(--brand-gold);
+  --border-accent: var(--brand-gold);
 
   /* ── Text ── */
-  --text-primary:   #10202f;
-  --text-secondary: #294154;
-  --text-tertiary:  #617285;
-  --text-muted:     #8a9baa;
-  --text-disabled:  #c4d4da;
+  --text-primary:   var(--brand-navy);
+  --text-secondary: var(--brand-navy);
+  --text-tertiary:  rgba(232,220,200,0.85);
+  --text-muted:     rgba(232,220,200,0.7);
+  --text-disabled:  rgba(232,220,200,0.45);
 
   /* ── Shadows ── */
   --shadow-xs: 0 1px 2px rgba(15,23,42,0.04);
@@ -319,18 +324,18 @@ button {
 .btn:active { transform: scale(0.98); transition-duration: var(--duration-fast); }
 
 .btn-primary {
-  background: linear-gradient(135deg, #00c2a8, #009f8b);
-  color: #fff;
-  box-shadow: var(--shadow-indigo);
-  border-color: var(--c-indigo-600);
+  background: var(--brand-gold);
+  color: var(--brand-navy);
+  box-shadow: 0 4px 14px rgba(198,167,94,0.28);
+  border-color: var(--brand-gold);
 }
 .btn-primary:hover { box-shadow: var(--shadow-indigo-lg); transform: translateY(-1px); }
 .btn-primary:active { transform: scale(0.98); }
 
 .btn-secondary {
-  background: #fff;
-  color: var(--text-secondary);
-  border-color: var(--border-medium);
+  background: var(--brand-beige);
+  color: var(--brand-navy);
+  border-color: var(--brand-gold);
   box-shadow: var(--shadow-xs);
 }
 .btn-secondary:hover { background: var(--c-slate-50); border-color: var(--c-slate-400); box-shadow: var(--shadow-sm); }
@@ -394,10 +399,10 @@ button {
   padding: 8px 12px;
   font-family: var(--font-sans);
   font-size: 13px;
-  background: #fff;
-  border: 1px solid var(--border-medium);
+  background: var(--brand-beige);
+  border: 1px solid var(--brand-gold);
   border-radius: var(--radius);
-  color: var(--text-primary);
+  color: var(--brand-navy);
   outline: none;
   transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
 }
@@ -434,7 +439,7 @@ button {
 .data-table tbody tr { transition: background var(--duration-fast); }
 .data-table tbody tr:hover { background: var(--c-indigo-50); cursor: pointer; }
 
-/* ────────────────────────���──────���─────────────────────────────
+/* ────────────────────────���──────���──────��──────────────────────
    PROGRESS / SCORE BAR
 ───────────────────────────────────────────────────────────── */
 .score-bar { height: 5px; border-radius: var(--radius-full); background: var(--c-slate-200); overflow: hidden; }
